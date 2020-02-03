@@ -17,14 +17,16 @@ namespace Bloggen.Net
         static void Main(string[] args)
         {
             Parser.Default.ParseArguments<CommandLineOptions>(args)
-                .WithParsed<CommandLineOptions>(o =>
-                {
-                    Console.WriteLine("Hello World!");
-                })
+                .WithParsed<CommandLineOptions>(Build)
                 .WithNotParsed(errors =>
                 {
                     Environment.Exit(1);
                 });
+        }
+
+        static void Build(CommandLineOptions o)
+        {
+            var serviceProvider = ServiceConfiguration.ConfigureServiceProvider();
         }
     }
 }

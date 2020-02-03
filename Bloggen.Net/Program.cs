@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using CommandLine;
+using Microsoft.Extensions.Configuration;
 
 namespace Bloggen.Net
 {
@@ -24,9 +26,13 @@ namespace Bloggen.Net
                 });
         }
 
-        static void Build(CommandLineOptions o)
+        static void Build(CommandLineOptions options)
         {
-            var serviceProvider = ServiceConfiguration.ConfigureServiceProvider();
+            var configuration = new ConfigurationBuilder()
+                .AddYamlFile(Path.Combine(options.SourceDirectory, "config.yml"), false)
+                .Build();
+
+            var serviceProvider = ServiceConfiguration.ConfigureServiceProvider(configuration);
         }
     }
 }

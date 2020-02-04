@@ -23,7 +23,7 @@ namespace Bloggen.Net
                 .AddYamlFile(Path.Combine(options.SourceDirectory, "config.yml"), false)
                 .Build();
 
-            var serviceProvider = ServiceConfiguration.ConfigureServiceProvider(siteConfiguration);
+            var serviceProvider = ServiceConfiguration.ConfigureServiceProvider(siteConfiguration, options);
         }
     }
 }

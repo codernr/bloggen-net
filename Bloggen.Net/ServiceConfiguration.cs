@@ -8,13 +8,14 @@ namespace Bloggen.Net
 {
     public static class ServiceConfiguration
     {
-        public static IServiceProvider ConfigureServiceProvider(IConfigurationRoot siteConfiguration)
+        public static IServiceProvider ConfigureServiceProvider(IConfigurationRoot siteConfiguration, CommandLineOptions commandLineOptions)
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.Configure<SiteConfig>(siteConfiguration);
-
-            serviceCollection.AddSingleton<IFileSystem, FileSystem>();
+            serviceCollection
+                .AddSingleton(commandLineOptions)
+                .Configure<SiteConfig>(siteConfiguration)
+                .AddSingleton<IFileSystem, FileSystem>();
 
             return serviceCollection.BuildServiceProvider();
         }

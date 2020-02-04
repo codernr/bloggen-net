@@ -5,8 +5,8 @@ namespace Bloggen.Net.Source
 {
     public interface ISourceHandler
     {
-        TextReader GetLayout();
+        Stream GetLayout();
 
-        IEnumerable<TextReader> GetPartials();
+        IEnumerable<Stream> GetPartials();
     }
 }

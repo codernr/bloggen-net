@@ -10,10 +10,10 @@ namespace Bloggen.Net
         public class CommandLineOptions
         {
             [Option('s', "source", Required = true, HelpText = "Source directory")]
-            public string SourceDirectory { get; set; }
+            public string SourceDirectory { get; set; } = string.Empty;
 
             [Option('o', "output", Required = true, HelpText = "Output directory")]
-            public string OutputDirectory { get; set; }
+            public string OutputDirectory { get; set; } = string.Empty;
         }
 
         static void Main(string[] args)
@@ -28,11 +28,11 @@ namespace Bloggen.Net
 
         static void Build(CommandLineOptions options)
         {
-            var configuration = new ConfigurationBuilder()
+            var siteConfiguration = new ConfigurationBuilder()
                 .AddYamlFile(Path.Combine(options.SourceDirectory, "config.yml"), false)
                 .Build();
 
-            var serviceProvider = ServiceConfiguration.ConfigureServiceProvider(configuration);
+            var serviceProvider = ServiceConfiguration.ConfigureServiceProvider(siteConfiguration);
         }
     }
 }

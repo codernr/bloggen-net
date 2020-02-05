@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Bloggen.Net.Source;
 using Xunit;
 
@@ -9,15 +10,17 @@ namespace Bloggen.Net.Tests
 {
     public class FileSystemSourceHandlerUnitTests
     {
+        private static bool isWin = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
         [Fact]
         public void ShouldReturnLayoutStreamWhenExists()
         {
             var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
-                { @"c:\source\layout.hbs", new MockFileData("hello") }
+                { isWin ? @"c:\source\index.hbs" : "/source/index.hbs", new MockFileData("hello") }
             }));
 
-            Assert.IsAssignableFrom<Stream>(service.GetLayout());
+            Assert.IsAssignableFrom<Stream>(service.GetTemplate());
         }
 
         [Fact]
@@ -25,7 +28,7 @@ namespace Bloggen.Net.Tests
         {
             var service = this.Construct(new MockFileSystem());
 
-            Assert.ThrowsAny<IOException>(() => service.GetLayout());
+            Assert.ThrowsAny<IOException>(() => service.GetTemplate());
         }
 
         [Fact]
@@ -33,8 +36,8 @@ namespace Bloggen.Net.Tests
         {
             var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
-                { @"c:\source\partials\a.hbs", new MockFileData("a") },
-                { @"c:\source\partials\b.hbs", new MockFileData("b") }
+                { isWin ? @"c:\source\partials\a.hbs" : "/source/partials/a.hbs", new MockFileData("a") },
+                { isWin ? @"c:\source\partials\b.hbs" : "/source/partials/b.hbs", new MockFileData("b") }
             }));
 
             var partials = service.GetPartials().ToArray();
@@ -56,7 +59,7 @@ namespace Bloggen.Net.Tests
         {
             return new FileSystemSourceHandler(mock, new CommandLineOptions
             {
-                SourceDirectory = @"c:\source", OutputDirectory = @"c:\output"    
+                SourceDirectory = isWin ? @"c:\source" : "/source", OutputDirectory = isWin ? @"c:\output" : "/output"    
             });
         }
     }

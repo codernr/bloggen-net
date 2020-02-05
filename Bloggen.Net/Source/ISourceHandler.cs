@@ -7,6 +7,6 @@ namespace Bloggen.Net.Source
     {
         Stream GetLayout();
 
-        IEnumerable<Stream> GetPartials();
+        IEnumerable<(string partialName, Stream stream)> GetPartials();
     }
 }

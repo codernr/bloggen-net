@@ -24,11 +24,13 @@ namespace Bloggen.Net.Source
                 this.fileSystem.Path.Combine(this.commandLineOptions.SourceDirectory, LAYOUT_NAME), FileMode.Open);
         }
 
-        public IEnumerable<Stream> GetPartials()
+        public IEnumerable<(string partialName, Stream stream)> GetPartials()
         {
             return this.fileSystem.Directory.EnumerateFiles(
                 this.fileSystem.Path.Combine(this.commandLineOptions.SourceDirectory, PARTIALS_DIRECTORY))
-                .Select(path => this.fileSystem.FileStream.Create(path, FileMode.Open));
+                .Select(path => 
+                    (this.fileSystem.Path.GetFileNameWithoutExtension(path), 
+                    this.fileSystem.FileStream.Create(path, FileMode.Open)));
         }
     }
 }

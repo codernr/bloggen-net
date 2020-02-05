@@ -34,6 +34,16 @@ namespace Bloggen.Net.Source
             var layoutsPath = this.fileSystem.Path.Combine(
                 this.commandLineOptions.SourceDirectory, LAYOUTS_DIRECTORY);
 
+            var files = LAYOUTS.Select(l => this.fileSystem.Path.Combine(layoutsPath, $"{l}.hbs"));
+
+            foreach (var f in files)
+            {
+                 if (!this.fileSystem.File.Exists(f))
+                 {
+                     throw new FileNotFoundException("Layout file not found", fileName: f);
+                 }
+            }
+
             return LAYOUTS.Select(l => 
                 (l, this.fileSystem.FileStream.Create(
                     this.fileSystem.Path.Combine(layoutsPath, $"{l}.hbs"), FileMode.Open)));

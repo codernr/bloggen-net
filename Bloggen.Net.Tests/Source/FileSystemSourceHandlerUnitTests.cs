@@ -13,7 +13,7 @@ namespace Bloggen.Net.Tests
         private static bool isWin = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         [Fact]
-        public void ShouldReturnLayoutStreamWhenExists()
+        public void ShouldReturnTemplateStreamWhenExists()
         {
             var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
@@ -24,11 +24,39 @@ namespace Bloggen.Net.Tests
         }
 
         [Fact]
-        public void ShouldThrowWhenLayoutDoesntExist()
+        public void ShouldThrowWhenTemplateDoesntExist()
         {
             var service = this.Construct(new MockFileSystem());
 
             Assert.ThrowsAny<IOException>(() => service.GetTemplate());
+        }
+
+        [Fact]
+        public void ShouldReturnLayoutStreams()
+        {
+            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { isWin ? @"c:\source\layouts\page.hbs" : "/source/layouts/page.hbs", new MockFileData(string.Empty) },
+                { isWin ? @"c:\source\layouts\post.hbs" : "/source/layouts/post.hbs", new MockFileData(string.Empty) },
+                { isWin ? @"c:\source\layouts\archive.hbs" : "/source/layouts/archive.hbs", new MockFileData(string.Empty) },
+                { isWin ? @"c:\source\layouts\tags.hbs" : "/source/layouts/tags.hbs", new MockFileData(string.Empty) }
+            }));
+
+            var layouts = service.GetLayouts().ToArray();
+
+            Assert.Equal(4, layouts.Length);
+            Assert.Equal("page", layouts[0].partialName);
+            Assert.Equal("post", layouts[1].partialName);
+            Assert.Equal("archive", layouts[2].partialName);
+            Assert.Equal("tags", layouts[3].partialName);
+        }
+
+        [Fact]
+        public void ShouldThrowWhenLayoutIsNotPresent()
+        {
+            var service = this.Construct(new MockFileSystem());
+
+            Assert.ThrowsAny<IOException>(() => service.GetLayouts());
         }
 
         [Fact]

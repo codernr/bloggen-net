@@ -2,6 +2,7 @@ using System;
 using System.IO.Abstractions;
 using Bloggen.Net.Config;
 using Bloggen.Net.Source;
+using Bloggen.Net.Template;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +18,8 @@ namespace Bloggen.Net
                 .AddSingleton(commandLineOptions)
                 .Configure<SiteConfig>(siteConfiguration)
                 .AddSingleton<IFileSystem, FileSystem>()
-                .AddSingleton<ISourceHandler, FileSystemSourceHandler>();
+                .AddSingleton<ISourceHandler, FileSystemSourceHandler>()
+                .AddSingleton<ITemplateHandler, HandlebarsTemplateHandler>();
 
             return serviceCollection.BuildServiceProvider();
         }

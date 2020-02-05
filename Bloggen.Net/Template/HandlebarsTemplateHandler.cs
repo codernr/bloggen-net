@@ -8,26 +8,30 @@ namespace Bloggen.Net.Template
 {
     public class HandlebarsTemplateHandler : ITemplateHandler
     {
+        private readonly IHandlebars handlebars;
+
         private readonly Action<TextWriter, object> renderLayout;
 
-        public HandlebarsTemplateHandler(ISourceHandler sourceHandler)
+        public HandlebarsTemplateHandler(ISourceHandler sourceHandler, IHandlebars handlebars)
         {
+            this.handlebars = handlebars;
+
             using var sr = new StreamReader(sourceHandler.GetLayout());
 
-            this.renderLayout = Handlebars.Compile(sr);
+            this.renderLayout = this.handlebars.Compile(sr);
 
-            RegisterPartials(sourceHandler.GetPartials());
+            this.RegisterPartials(sourceHandler.GetPartials());
         }
 
-        private static void RegisterPartials(IEnumerable<(string templateName, Stream stream)> partials)
+        private void RegisterPartials(IEnumerable<(string templateName, Stream stream)> partials)
         {
            foreach (var partial in partials)
            {
                using var sr = new StreamReader(partial.stream);
 
-               var compiled = Handlebars.Compile(sr);
+               var compiled = this.handlebars.Compile(sr);
 
-               Handlebars.RegisterTemplate(partial.templateName, compiled);
+               this.handlebars.RegisterTemplate(partial.templateName, compiled);
            }
         }
     }

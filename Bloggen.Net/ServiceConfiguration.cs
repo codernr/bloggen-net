@@ -3,6 +3,7 @@ using System.IO.Abstractions;
 using Bloggen.Net.Config;
 using Bloggen.Net.Source;
 using Bloggen.Net.Template;
+using HandlebarsDotNet;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,7 @@ namespace Bloggen.Net
                 .Configure<SiteConfig>(siteConfiguration)
                 .AddSingleton<IFileSystem, FileSystem>()
                 .AddSingleton<ISourceHandler, FileSystemSourceHandler>()
+                .AddSingleton<IHandlebars>(Handlebars.Create())
                 .AddSingleton<ITemplateHandler, HandlebarsTemplateHandler>();
 
             return serviceCollection.BuildServiceProvider();

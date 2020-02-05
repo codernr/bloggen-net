@@ -37,9 +37,11 @@ namespace Bloggen.Net.Tests
                 { @"c:\source\partials\b.hbs", new MockFileData("b") }
             }));
 
-            var partials = service.GetPartials();
+            var partials = service.GetPartials().ToArray();
             
             Assert.Equal(2, partials.Count());
+            Assert.Equal("a", partials[0].partialName);
+            Assert.Equal("b", partials[1].partialName);
         }
 
         [Fact]

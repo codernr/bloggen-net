@@ -9,7 +9,7 @@ namespace Bloggen.Net.Source
     {
         private const string LAYOUT_NAME = "layout.hbs";
 
-        private const string PARIALS_DIRECTORY = "partials";
+        private const string PARTIALS_DIRECTORY = "partials";
         
         private readonly IFileSystem fileSystem;
 
@@ -27,7 +27,7 @@ namespace Bloggen.Net.Source
         public IEnumerable<Stream> GetPartials()
         {
             return this.fileSystem.Directory.EnumerateFiles(
-                this.fileSystem.Path.Combine(this.commandLineOptions.SourceDirectory, PARIALS_DIRECTORY))
+                this.fileSystem.Path.Combine(this.commandLineOptions.SourceDirectory, PARTIALS_DIRECTORY))
                 .Select(path => this.fileSystem.FileStream.Create(path, FileMode.Open));
         }
     }

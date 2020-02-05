@@ -3,7 +3,10 @@ using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Bloggen.Net.Config;
 using Bloggen.Net.Source;
+using Microsoft.Extensions.Options;
+using Moq;
 using Xunit;
 
 namespace Bloggen.Net.Tests
@@ -17,7 +20,7 @@ namespace Bloggen.Net.Tests
         {
             var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
-                { isWin ? @"c:\source\index.hbs" : "/source/index.hbs", new MockFileData("hello") }
+                { isWin ? @"c:\source\templates\x\index.hbs" : "/source/templates/x/index.hbs", new MockFileData("hello") }
             }));
 
             Assert.IsAssignableFrom<Stream>(service.GetTemplate());
@@ -36,10 +39,10 @@ namespace Bloggen.Net.Tests
         {
             var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
-                { isWin ? @"c:\source\layouts\page.hbs" : "/source/layouts/page.hbs", new MockFileData(string.Empty) },
-                { isWin ? @"c:\source\layouts\post.hbs" : "/source/layouts/post.hbs", new MockFileData(string.Empty) },
-                { isWin ? @"c:\source\layouts\archive.hbs" : "/source/layouts/archive.hbs", new MockFileData(string.Empty) },
-                { isWin ? @"c:\source\layouts\tags.hbs" : "/source/layouts/tags.hbs", new MockFileData(string.Empty) }
+                { isWin ? @"c:\source\templates\x\layouts\page.hbs" : "/source/templates/x/layouts/page.hbs", new MockFileData(string.Empty) },
+                { isWin ? @"c:\source\templates\x\layouts\post.hbs" : "/source/templates/x/layouts/post.hbs", new MockFileData(string.Empty) },
+                { isWin ? @"c:\source\templates\x\layouts\archive.hbs" : "/source/templates/x/layouts/archive.hbs", new MockFileData(string.Empty) },
+                { isWin ? @"c:\source\templates\x\layouts\tags.hbs" : "/source/templates/x/layouts/tags.hbs", new MockFileData(string.Empty) }
             }));
 
             var layouts = service.GetLayouts().ToArray();
@@ -64,8 +67,8 @@ namespace Bloggen.Net.Tests
         {
             var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
-                { isWin ? @"c:\source\partials\a.hbs" : "/source/partials/a.hbs", new MockFileData("a") },
-                { isWin ? @"c:\source\partials\b.hbs" : "/source/partials/b.hbs", new MockFileData("b") }
+                { isWin ? @"c:\source\templates\x\partials\a.hbs" : "/source/templates/x/partials/a.hbs", new MockFileData("a") },
+                { isWin ? @"c:\source\templates\x\partials\b.hbs" : "/source/templates/x/partials/b.hbs", new MockFileData("b") }
             }));
 
             var partials = service.GetPartials().ToArray();
@@ -85,10 +88,14 @@ namespace Bloggen.Net.Tests
 
         private FileSystemSourceHandler Construct(MockFileSystem mock)
         {
+            var optionsMock = new Mock<IOptions<SiteConfig>>();
+
+            optionsMock.Setup(m => m.Value).Returns(new SiteConfig { Template = "x" });
+
             return new FileSystemSourceHandler(mock, new CommandLineOptions
             {
                 SourceDirectory = isWin ? @"c:\source" : "/source", OutputDirectory = isWin ? @"c:\output" : "/output"    
-            });
+            }, optionsMock.Object);
         }
     }
 

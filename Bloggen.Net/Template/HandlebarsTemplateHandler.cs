@@ -10,17 +10,19 @@ namespace Bloggen.Net.Template
     {
         private readonly IHandlebars handlebars;
 
-        private readonly Action<TextWriter, object> renderLayout;
+        private readonly Action<TextWriter, object> renderTemplate;
 
         public HandlebarsTemplateHandler(ISourceHandler sourceHandler, IHandlebars handlebars)
         {
             this.handlebars = handlebars;
 
-            using var sr = new StreamReader(sourceHandler.GetLayout());
+            using var sr = new StreamReader(sourceHandler.GetTemplate());
 
-            this.renderLayout = this.handlebars.Compile(sr);
+            this.renderTemplate = this.handlebars.Compile(sr);
 
             this.RegisterPartials(sourceHandler.GetPartials());
+
+            this.RegisterPartials(sourceHandler.GetLayouts());
         }
 
         private void RegisterPartials(IEnumerable<(string templateName, Stream stream)> partials)

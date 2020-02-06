@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Bloggen.Net.Serialization;
 using Bloggen.Net.Source;
 using YamlDotNet.Serialization;
 
@@ -14,7 +15,7 @@ namespace Bloggen.Net.Model
 
         private readonly ISourceHandler sourceHandler;
 
-        private readonly IDeserializer deserializer;
+        private readonly IFrontMatterDeserializer frontMatterDeserializer;
 
         public IEnumerable<Post> Posts
         {
@@ -26,10 +27,10 @@ namespace Bloggen.Net.Model
             get { return this.tags; }
         }
 
-        public Context(ISourceHandler sourceHandler, IDeserializer deserializer)
+        public Context(ISourceHandler sourceHandler, IFrontMatterDeserializer frontMatterDeserializer)
         {
             this.sourceHandler = sourceHandler;
-            this.deserializer = deserializer;
+            this.frontMatterDeserializer = frontMatterDeserializer;
 
             this.InitializePosts();
             this.InitializeTags();
@@ -42,7 +43,7 @@ namespace Bloggen.Net.Model
             {
                 using var sr = new StreamReader(p.stream);
 
-                var post = this.deserializer.Deserialize<Post>(sr);
+                var post = this.frontMatterDeserializer.Deserialize<Post>(sr);
 
                 post.FileName = p.fileName;
 

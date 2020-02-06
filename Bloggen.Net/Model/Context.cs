@@ -33,6 +33,7 @@ namespace Bloggen.Net.Model
 
             this.InitializePosts();
             this.InitializeTags();
+            this.ReferenceObjects();
         }
 
         private void InitializePosts()
@@ -55,6 +56,24 @@ namespace Bloggen.Net.Model
                 this.posts.SelectMany(p => p.Tags)
                     .Distinct()
                     .Select(t => new Tag { Name = t }));
+        }
+
+        private void ReferenceObjects()
+        {
+            foreach (var p in this.posts)
+            {
+                this.CrossReferenceTags(p);
+            }
+        }
+
+        private void CrossReferenceTags(Post p)
+        {
+            foreach (var tagName in p.Tags)
+            {
+                var tag = this.tags.First(t => t.Name == tagName);
+                tag.PostReferences.Add(p);
+                p.TagReferences.Add(tag);
+            }
         }
     }
 }

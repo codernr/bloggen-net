@@ -10,7 +10,7 @@ namespace Bloggen.Net.Model
 
         public string? Excerpt { get; set; }
 
-        public List<string>? Tags { get; set; }
+        public List<string> Tags { get; set; } = new List<string>();
 
         public List<Tag> TagReferences { get; set; } = new List<Tag>();
     }

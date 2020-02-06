@@ -27,6 +27,14 @@ namespace Bloggen.Net.Tests.Model
             Assert.Equal("tag1", tags[0].Name);
             Assert.Equal("tag2", tags[1].Name);
             Assert.Equal("tag3", tags[2].Name);
+            Assert.Contains(tags[0], posts[0].TagReferences);
+            Assert.Contains(tags[1], posts[0].TagReferences);
+            Assert.Contains(tags[1], posts[1].TagReferences);
+            Assert.Contains(tags[2], posts[1].TagReferences);
+            Assert.Contains(posts[0], tags[0].PostReferences);
+            Assert.Contains(posts[0], tags[1].PostReferences);
+            Assert.Contains(posts[1], tags[1].PostReferences);
+            Assert.Contains(posts[1], tags[2].PostReferences);
         }
 
         private ISourceHandler GetSourceHandler()

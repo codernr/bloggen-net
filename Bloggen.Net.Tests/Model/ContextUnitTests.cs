@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Bloggen.Net.Model;
+using Bloggen.Net.Serialization;
 using Bloggen.Net.Source;
 using Moq;
 using Xunit;
-using YamlDotNet.Serialization;
 
 namespace Bloggen.Net.Tests.Model
 {
@@ -49,9 +49,9 @@ namespace Bloggen.Net.Tests.Model
             return m.Object;
         }
 
-        private IDeserializer GetDeserializer()
+        private IFrontMatterDeserializer GetDeserializer()
         {
-            var m = new Mock<IDeserializer>();
+            var m = new Mock<IFrontMatterDeserializer>();
 
             m.Setup(o => o.Deserialize<Post>(It.IsAny<TextReader>())).Returns(new Func<TextReader, Post>(this.GetPost));
 

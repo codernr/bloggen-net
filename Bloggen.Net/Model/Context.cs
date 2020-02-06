@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using Bloggen.Net.Serialization;
 using Bloggen.Net.Source;
-using YamlDotNet.Serialization;
 
 namespace Bloggen.Net.Model
 {

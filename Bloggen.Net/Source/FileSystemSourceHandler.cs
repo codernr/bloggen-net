@@ -18,10 +18,14 @@ namespace Bloggen.Net.Source
         private static readonly string[] LAYOUTS = {"page", "post", "archive", "tags"};
 
         private const string PARTIALS_DIRECTORY = "partials";
+
+        private const string POSTS_DIRECTORY = "posts";
         
         private readonly IFileSystem fileSystem;
 
         private readonly string templatePath;
+
+        private readonly string postsPath;
 
         public FileSystemSourceHandler(
             IFileSystem fileSystem,
@@ -34,6 +38,11 @@ namespace Bloggen.Net.Source
                 commandLineOptions.SourceDirectory,
                 TEMPLATES_DIRECTORY,
                 siteConfig.Value.Template
+            );
+
+            this.postsPath = this.fileSystem.Path.Combine(
+                commandLineOptions.SourceDirectory,
+                POSTS_DIRECTORY
             );
         }
 
@@ -65,11 +74,21 @@ namespace Bloggen.Net.Source
 
         public IEnumerable<(string partialName, Stream stream)> GetPartials()
         {
-            return this.fileSystem.Directory.EnumerateFiles(
-                this.fileSystem.Path.Combine(this.templatePath, PARTIALS_DIRECTORY))
-                .Select(path => 
-                    (this.fileSystem.Path.GetFileNameWithoutExtension(path), 
-                    this.fileSystem.FileStream.Create(path, FileMode.Open)));
+            return this.EnumerateFiles(
+                this.fileSystem.Path.Combine(this.templatePath, PARTIALS_DIRECTORY));
+        }
+
+        public IEnumerable<(string fileName, Stream stream)> GetPosts()
+        {
+            return this.EnumerateFiles(this.postsPath);
+        }
+
+        private IEnumerable<(string name, Stream stream)> EnumerateFiles(string path)
+        {
+            return this.fileSystem.Directory.EnumerateFiles(path)
+                .Select(p => 
+                    (this.fileSystem.Path.GetFileNameWithoutExtension(p), 
+                    this.fileSystem.FileStream.Create(p, FileMode.Open)));
         }
     }
 }

@@ -10,5 +10,7 @@ namespace Bloggen.Net.Source
         IEnumerable<(string partialName, Stream stream)> GetLayouts();
 
         IEnumerable<(string partialName, Stream stream)> GetPartials();
+
+        IEnumerable<(string fileName, Stream stream)> GetPosts();
     }
 }

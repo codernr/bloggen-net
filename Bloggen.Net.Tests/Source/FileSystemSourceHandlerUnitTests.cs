@@ -86,6 +86,30 @@ namespace Bloggen.Net.Tests
             Assert.Throws<DirectoryNotFoundException>(() => service.GetPartials());
         }
 
+        [Fact]
+        public void ShouldReturnPostsStreams()
+        {
+            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { isWin ? @"c:\source\posts\a.hbs" : "/source/posts/a.hbs", new MockFileData("a") },
+                { isWin ? @"c:\source\posts\b.hbs" : "/source/posts/b.hbs", new MockFileData("b") }
+            }));
+
+            var posts = service.GetPosts().ToArray();
+            
+            Assert.Equal(2, posts.Count());
+            Assert.Equal("a", posts[0].fileName);
+            Assert.Equal("b", posts[1].fileName);
+        }
+
+        [Fact]
+        public void ShouldThrowWhenPostsDirNotPresent()
+        {
+            var service = this.Construct(new MockFileSystem());
+
+            Assert.Throws<DirectoryNotFoundException>(() => service.GetPartials());
+        }
+
         private FileSystemSourceHandler Construct(MockFileSystem mock)
         {
             var optionsMock = new Mock<IOptions<SiteConfig>>();

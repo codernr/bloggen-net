@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Bloggen.Net.Models
+namespace Bloggen.Net.Model
 {
     public class Post
     {

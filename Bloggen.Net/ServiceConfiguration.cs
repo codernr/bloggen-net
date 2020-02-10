@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace Bloggen.Net
 {
@@ -27,6 +28,7 @@ namespace Bloggen.Net
                 .AddSingleton<IFileSystem, FileSystem>()
                 .AddSingleton<ISourceHandler, FileSystemSourceHandler>()
                 .AddSingleton<IDeserializer>(new DeserializerBuilder()
+                    .WithNodeDeserializer(inner => new ValidatingNodeDeserializer(inner), s => s.InsteadOf<ObjectNodeDeserializer>())
                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
                     .Build())
                 .AddSingleton<Func<TextReader, IParser>>(tr => new Parser(tr))

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bloggen.Net.Model
 {
@@ -6,6 +7,7 @@ namespace Bloggen.Net.Model
     {
         public string FileName { get; set; } = null!;
         
+        [Required]
         public string? Title { get; set; }
 
         public string? Excerpt { get; set; }

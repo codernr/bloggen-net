@@ -1,19 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Bloggen.Net.Config;
 using Bloggen.Net.Source;
 using HandlebarsDotNet;
+using Microsoft.Extensions.Options;
 
 namespace Bloggen.Net.Template
 {
     public class HandlebarsTemplateHandler : ITemplateHandler
     {
+        private readonly SiteConfig siteConfig;
+
         private readonly IHandlebars handlebars;
 
         private readonly Action<TextWriter, object> renderTemplate;
 
-        public HandlebarsTemplateHandler(ISourceHandler sourceHandler, IHandlebars handlebars)
+        public HandlebarsTemplateHandler(ISourceHandler sourceHandler, IHandlebars handlebars, IOptions<SiteConfig> siteConfig)
         {
+            this.siteConfig = siteConfig.Value;
+            
             this.handlebars = handlebars;
 
             using var sr = new StreamReader(sourceHandler.GetTemplate());
@@ -35,6 +41,11 @@ namespace Bloggen.Net.Template
 
                this.handlebars.RegisterTemplate(partial.templateName, compiled);
            }
+        }
+
+        public void Write(TextWriter writer, string layout, object data)
+        {
+            this.renderTemplate(writer, new { layout = layout, data = data, site = this.siteConfig });
         }
     }
 }

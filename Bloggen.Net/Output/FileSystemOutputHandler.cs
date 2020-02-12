@@ -4,9 +4,9 @@ namespace Bloggen.Net.Output
 {
     public class FileSystemOutputHandler : IOutputHandler
     {
-        private const string POSTS_DIRECTORY = "posts";
+        public const string POSTS_DIRECTORY = "posts";
 
-        private const string TAGS_DIRECTORY = "tags";
+        public const string TAGS_DIRECTORY = "tags";
 
         private readonly string outputDirectory;
 

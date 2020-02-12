@@ -16,5 +16,10 @@ namespace Bloggen.Net.Output.Implementation
         public List<string> Tags { get; set; } = new List<string>();
 
         public List<ITag> TagReferences { get; set; } = new List<ITag>();
+
+        public string Url
+        { 
+            get { return $"/{FileSystemOutputHandler.POSTS_DIRECTORY}/{this.FileName}"; }
+        }
     }
 }

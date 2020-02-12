@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Bloggen.Net.Model;
 
-namespace Bloggen.Net.Model
+namespace Bloggen.Net.Output.Implementation
 {
-    public class Post
+    public class Post : IPost
     {
         public string FileName { get; set; } = null!;
         
@@ -14,6 +15,6 @@ namespace Bloggen.Net.Model
 
         public List<string> Tags { get; set; } = new List<string>();
 
-        public List<Tag> TagReferences { get; set; } = new List<Tag>();
+        public List<ITag> TagReferences { get; set; } = new List<ITag>();
     }
 }

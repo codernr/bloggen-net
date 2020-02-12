@@ -16,7 +16,7 @@ namespace Bloggen.Net.Tests.Model
         [Fact]
         public void ShouldPopulatePostsAndTagsCorrectly()
         {
-            var service = new Context(this.GetSourceHandler(), this.GetDeserializer());
+            var service = new Context<Post, Tag>(this.GetSourceHandler(), this.GetDeserializer());
 
             var posts = service.Posts.ToArray();
             var tags = service.Tags.ToArray();
@@ -72,6 +72,26 @@ namespace Bloggen.Net.Tests.Model
         private static Stream Stream(string s)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(s));
+        }
+
+        private class Post : IPost
+        {
+            public string FileName { get; set; } = null!;
+            
+            public string? Title { get; set; }
+
+            public string? Excerpt { get; set; }
+
+            public List<string> Tags { get; set; } = new List<string>();
+
+            public List<ITag> TagReferences { get; set; } = new List<ITag>();
+        }
+
+        private class Tag : ITag
+        {
+            public string? Name { get; set; }
+
+            public List<IPost> PostReferences { get; set; } = new List<IPost>();
         }
     }
 }

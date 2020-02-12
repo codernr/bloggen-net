@@ -6,22 +6,22 @@ using Bloggen.Net.Source;
 
 namespace Bloggen.Net.Model
 {
-    public class Context : IContext
+    public class Context<TPost, TTag> : IContext<TPost, TTag> where TPost : IPost, new() where TTag : ITag, new()
     {
-        private readonly List<Post> posts = new List<Post>();
+        private readonly List<TPost> posts = new List<TPost>();
 
-        private readonly List<Tag> tags = new List<Tag>();
+        private readonly List<TTag> tags = new List<TTag>();
 
         private readonly ISourceHandler sourceHandler;
 
         private readonly IFrontMatterDeserializer frontMatterDeserializer;
 
-        public IEnumerable<Post> Posts
+        public IEnumerable<TPost> Posts
         {
             get { return this.posts; }
         }
 
-        public IEnumerable<Tag> Tags
+        public IEnumerable<TTag> Tags
         {
             get { return this.tags; }
         }
@@ -42,7 +42,7 @@ namespace Bloggen.Net.Model
             {
                 using var sr = new StreamReader(p.stream);
 
-                var post = this.frontMatterDeserializer.Deserialize<Post>(sr);
+                var post = this.frontMatterDeserializer.Deserialize<TPost>(sr);
 
                 post.FileName = p.fileName;
 
@@ -55,7 +55,7 @@ namespace Bloggen.Net.Model
             this.tags.AddRange(
                 this.posts.SelectMany(p => p.Tags)
                     .Distinct()
-                    .Select(t => new Tag { Name = t }));
+                    .Select(t => new TTag { Name = t }));
         }
 
         private void ReferenceObjects()
@@ -66,7 +66,7 @@ namespace Bloggen.Net.Model
             }
         }
 
-        private void CrossReferenceTags(Post p)
+        private void CrossReferenceTags(TPost p)
         {
             foreach (var tagName in p.Tags)
             {

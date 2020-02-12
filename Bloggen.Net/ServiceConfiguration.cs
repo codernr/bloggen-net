@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Abstractions;
 using Bloggen.Net.Config;
 using Bloggen.Net.Model;
+using Bloggen.Net.Output.Implementation;
 using Bloggen.Net.Serialization;
 using Bloggen.Net.Source;
 using Bloggen.Net.Template;
@@ -33,7 +34,7 @@ namespace Bloggen.Net
                     .Build())
                 .AddSingleton<Func<TextReader, IParser>>(tr => new Parser(tr))
                 .AddSingleton<IFrontMatterDeserializer, FrontMatterDeserializer>()
-                .AddSingleton<IContext, Context>()
+                .AddSingleton<IContext<Post, Tag>, Context<Post, Tag>>()
                 .AddSingleton<IHandlebars>(Handlebars.Create())
                 .AddSingleton<ITemplateHandler, HandlebarsTemplateHandler>();
 

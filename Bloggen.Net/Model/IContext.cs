@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 namespace Bloggen.Net.Model
 {
-    public interface IContext
+    public interface IContext<TPost, TTag> where TPost : IPost where TTag : ITag
     {
-        IEnumerable<Post> Posts { get; }
+        IEnumerable<TPost> Posts { get; }
 
-        IEnumerable<Tag> Tags { get; }
+        IEnumerable<TTag> Tags { get; }
     }
 }

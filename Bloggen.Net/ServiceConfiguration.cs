@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Abstractions;
 using Bloggen.Net.Config;
 using Bloggen.Net.Model;
+using Bloggen.Net.Output;
 using Bloggen.Net.Output.Implementation;
 using Bloggen.Net.Serialization;
 using Bloggen.Net.Source;
@@ -36,7 +37,8 @@ namespace Bloggen.Net
                 .AddSingleton<IFrontMatterDeserializer, FrontMatterDeserializer>()
                 .AddSingleton<IContext<Post, Tag>, Context<Post, Tag>>()
                 .AddSingleton<IHandlebars>(Handlebars.Create())
-                .AddSingleton<ITemplateHandler, HandlebarsTemplateHandler>();
+                .AddSingleton<ITemplateHandler, HandlebarsTemplateHandler>()
+                .AddSingleton<IOutputHandler, FileSystemOutputHandler>();
 
             return serviceCollection.BuildServiceProvider();
         }

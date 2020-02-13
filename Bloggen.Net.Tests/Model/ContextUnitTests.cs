@@ -89,7 +89,7 @@ namespace Bloggen.Net.Tests.Model
 
         private class Tag : ITag
         {
-            public string? Name { get; set; }
+            public string Name { get; set; } = null!;
 
             public List<IPost> PostReferences { get; set; } = new List<IPost>();
         }

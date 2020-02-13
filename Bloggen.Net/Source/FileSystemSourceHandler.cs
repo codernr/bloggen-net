@@ -15,7 +15,7 @@ namespace Bloggen.Net.Source
 
         private const string LAYOUTS_DIRECTORY = "layouts";
 
-        private static readonly string[] LAYOUTS = {"page", "post", "archive", "tags"};
+        private static readonly string[] LAYOUTS = {"page", "post", "archive", "tags", "tag"};
 
         private const string PARTIALS_DIRECTORY = "partials";
 

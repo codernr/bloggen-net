@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Abstractions;
 using Bloggen.Net.Model;
 using Bloggen.Net.Output.Implementation;

@@ -16,6 +16,8 @@ namespace Bloggen.Net.Template
 
         private readonly Action<TextWriter, object> renderTemplate;
 
+        private readonly Dictionary<string, Action<TextWriter, object>> layouts = new Dictionary<string, Action<TextWriter, object>>();
+
         public HandlebarsTemplateHandler(ISourceHandler sourceHandler, IHandlebars handlebars, IOptions<SiteConfig> siteConfig)
         {
             this.siteConfig = siteConfig.Value;
@@ -28,7 +30,9 @@ namespace Bloggen.Net.Template
 
             this.RegisterPartials(sourceHandler.GetPartials());
 
-            this.RegisterPartials(sourceHandler.GetLayouts());
+            this.RegisterLayouts(sourceHandler.GetLayouts());
+
+            this.RegisterHelpers();
         }
 
         private void RegisterPartials(IEnumerable<(string templateName, Stream stream)> partials)
@@ -41,6 +45,31 @@ namespace Bloggen.Net.Template
 
                this.handlebars.RegisterTemplate(partial.templateName, compiled);
            }
+        }
+
+        private void RegisterLayouts(IEnumerable<(string layoutName, Stream stream)> layouts)
+        {
+            foreach(var layout in layouts)
+            {
+                using var sr = new StreamReader(layout.stream);
+
+                this.layouts.Add(layout.layoutName, this.handlebars.Compile(sr));
+            }
+        }
+
+        private void RegisterHelpers()
+        {
+            this.handlebars.RegisterHelper("render", (writer, context, parameters) => 
+            {
+                if (parameters.Length != 1 || !(parameters[0] is string) || parameters[0] == null)
+                {
+                    throw new ArgumentException("Layout helper needs exactly one string parameter");
+                }
+
+                string layout = (parameters[0] as string)!;
+
+                this.layouts[layout](writer, context);
+            });
         }
 
         public void Write(TextWriter writer, string layout, object data)

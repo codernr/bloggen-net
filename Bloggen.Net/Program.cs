@@ -1,7 +1,9 @@
 using System;
 using System.IO;
+using Bloggen.Net.Output;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Bloggen.Net
 {
@@ -24,6 +26,8 @@ namespace Bloggen.Net
                 .Build();
 
             var serviceProvider = ServiceConfiguration.ConfigureServiceProvider(siteConfiguration, options);
+
+            serviceProvider.GetService<IOutputHandler>().Generate();
         }
     }
 }

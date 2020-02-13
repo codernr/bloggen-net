@@ -4,7 +4,7 @@ namespace Bloggen.Net.Model
 {
     public interface ITag
     {
-        string? Name { get; set; }
+        string Name { get; set; }
 
         List<IPost> PostReferences { get; set; }
     }

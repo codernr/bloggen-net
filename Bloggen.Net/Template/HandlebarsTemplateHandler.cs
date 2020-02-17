@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Bloggen.Net.Config;
-using Bloggen.Net.Content;
 using Bloggen.Net.Source;
 using HandlebarsDotNet;
 using Microsoft.Extensions.Options;

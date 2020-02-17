@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
+using Bloggen.Net.Content;
 using Bloggen.Net.Model;
 using Bloggen.Net.Output.Implementation;
 using Bloggen.Net.Template;
@@ -23,19 +24,22 @@ namespace Bloggen.Net.Output
 
         private readonly ITemplateHandler templateHandler;
 
+        private readonly IContentParser contentParser;
+
         public FileSystemOutputHandler(
             CommandLineOptions commandLineOptions,
             IFileSystem fileSystem,
             IContext<Post, Tag> context,
-            ITemplateHandler templateHandler) =>
-            (this.outputDirectory, this.fileSystem, this.context, this.templateHandler) =
-            (commandLineOptions.OutputDirectory, fileSystem, context, templateHandler);
+            ITemplateHandler templateHandler,
+            IContentParser contentParser) =>
+            (this.outputDirectory, this.fileSystem, this.context, this.templateHandler, this.contentParser) =
+            (commandLineOptions.OutputDirectory, fileSystem, context, templateHandler, contentParser);
 
         public void Generate()
         {
             this.ClearOutput();
 
-            this.Generate(POSTS_DIRECTORY, this.context.Posts, p => p.FileName, "post");
+            this.Generate(POSTS_DIRECTORY, this.context.Posts, p => p.FileName, "post", p => this.contentParser.RenderPost(p.FileName));
 
             this.Generate(TAGS_DIRECTORY, this.context.Tags, t => t.Name, "tag");
         }
@@ -50,7 +54,11 @@ namespace Bloggen.Net.Output
             this.fileSystem.Directory.CreateDirectory(this.outputDirectory);
         }
 
-        private void Generate<T>(string directory, IEnumerable<T> items, Func<T, string> nameSelector, string layout) where T : class
+        private void Generate<T>(
+            string directory,
+            IEnumerable<T> items,
+            Func<T, string> nameSelector,
+            string layout, Func<T, string>? getContent = null) where T : class
         {
             var path = this.fileSystem.Path.Combine(this.outputDirectory, directory);
 
@@ -62,7 +70,7 @@ namespace Bloggen.Net.Output
                     $"{this.fileSystem.Path.Combine(path, nameSelector(item))}.{EXTENSION}"
                 );
 
-                this.templateHandler.Write(sw, layout, item);
+                this.templateHandler.Write(sw, layout, item, getContent != null ? getContent(item) : null);
             }
         }
     }

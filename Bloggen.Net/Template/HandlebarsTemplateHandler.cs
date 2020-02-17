@@ -73,6 +73,18 @@ namespace Bloggen.Net.Template
 
                 this.layouts[layout](writer, context);
             });
+
+            this.handlebars.RegisterHelper("html", (writer, context, parameters) => 
+            {
+                if (parameters.Length != 1 || !(parameters[0] is string) || parameters[0] == null)
+                {
+                    throw new ArgumentException("Html helper needs exactly one string parameter");
+                }
+
+                string content = (parameters[0] as string)!;
+
+                writer.WriteSafeString(content);
+            });
         }
 
         public void Write(TextWriter writer, string layout, object data, string? content = null)

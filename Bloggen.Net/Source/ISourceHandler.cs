@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Bloggen.Net.Source
 {
@@ -12,5 +13,7 @@ namespace Bloggen.Net.Source
         IEnumerable<(string partialName, Stream stream)> GetPartials();
 
         IEnumerable<(string fileName, Stream stream)> GetPosts();
+
+        Task<string> GetPostAsync(string fileName);
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Threading.Tasks;
 using Bloggen.Net.Config;
 using Microsoft.Extensions.Options;
 
@@ -81,6 +82,14 @@ namespace Bloggen.Net.Source
         public IEnumerable<(string fileName, Stream stream)> GetPosts()
         {
             return this.EnumerateFiles(this.postsPath);
+        }
+
+        public Task<string> GetPostAsync(string fileName)
+        {
+            var filePath = this.fileSystem.Directory.GetFiles(this.postsPath).First(f =>
+                this.fileSystem.Path.GetFileNameWithoutExtension(f) == fileName);
+
+            return this.fileSystem.File.ReadAllTextAsync(filePath);
         }
 
         private IEnumerable<(string name, Stream stream)> EnumerateFiles(string path)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Bloggen.Net.Config;
+using Bloggen.Net.Content;
 using Bloggen.Net.Source;
 using HandlebarsDotNet;
 using Microsoft.Extensions.Options;
@@ -14,25 +15,33 @@ namespace Bloggen.Net.Template
 
         private readonly IHandlebars handlebars;
 
+        private readonly IContentParser contentParser;
+
         private readonly Action<TextWriter, object> renderTemplate;
 
         private readonly Dictionary<string, Action<TextWriter, object>> layouts = new Dictionary<string, Action<TextWriter, object>>();
 
-        public HandlebarsTemplateHandler(ISourceHandler sourceHandler, IHandlebars handlebars, IOptions<SiteConfig> siteConfig)
+        public HandlebarsTemplateHandler(
+            ISourceHandler sourceHandler,
+            IHandlebars handlebars,
+            IContentParser contentParser,
+            IOptions<SiteConfig> siteConfig)
         {
             this.siteConfig = siteConfig.Value;
             
             this.handlebars = handlebars;
 
+            this.contentParser = contentParser;
+
             using var sr = new StreamReader(sourceHandler.GetTemplate());
+
+            this.RegisterHelpers();
 
             this.renderTemplate = this.handlebars.Compile(sr);
 
             this.RegisterPartials(sourceHandler.GetPartials());
 
             this.RegisterLayouts(sourceHandler.GetLayouts());
-
-            this.RegisterHelpers();
         }
 
         private void RegisterPartials(IEnumerable<(string templateName, Stream stream)> partials)

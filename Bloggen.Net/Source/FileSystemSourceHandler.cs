@@ -84,12 +84,12 @@ namespace Bloggen.Net.Source
             return this.EnumerateFiles(this.postsPath);
         }
 
-        public Task<string> GetPostAsync(string fileName)
+        public string GetPost(string fileName)
         {
             var filePath = this.fileSystem.Directory.GetFiles(this.postsPath).First(f =>
                 this.fileSystem.Path.GetFileNameWithoutExtension(f) == fileName);
 
-            return this.fileSystem.File.ReadAllTextAsync(filePath);
+            return this.fileSystem.File.ReadAllText(filePath);
         }
 
         private IEnumerable<(string name, Stream stream)> EnumerateFiles(string path)

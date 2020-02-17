@@ -21,10 +21,10 @@ namespace Bloggen.Net.Content
                 .Build();
         }
 
-        public async Task RenderPostAsync(string fileName, TextWriter writer)
+        public void RenderPost(string fileName, TextWriter writer)
         {
             Markdown.ToHtml(
-                await this.sourceHandler.GetPostAsync(fileName),
+                this.sourceHandler.GetPost(fileName),
                 writer,
                 this.pipeline);
         }

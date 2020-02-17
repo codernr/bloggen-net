@@ -14,6 +14,6 @@ namespace Bloggen.Net.Source
 
         IEnumerable<(string fileName, Stream stream)> GetPosts();
 
-        Task<string> GetPostAsync(string fileName);
+        string GetPost(string fileName);
     }
 }

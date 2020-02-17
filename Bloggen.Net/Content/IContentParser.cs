@@ -5,6 +5,6 @@ namespace Bloggen.Net.Content
 {
     public interface IContentParser
     {
-        Task RenderPostAsync(string fileName, TextWriter writer);
+        void RenderPost(string fileName, TextWriter writer);
     }
 }

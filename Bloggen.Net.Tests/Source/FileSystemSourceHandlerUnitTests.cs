@@ -112,6 +112,35 @@ namespace Bloggen.Net.Tests
             Assert.Throws<DirectoryNotFoundException>(() => service.GetPartials());
         }
 
+        [Fact]
+        public void ShouldReturnPagesStreams()
+        {
+            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { isWin ? @"c:\source\pages\a.md" : "/source/pages/a.md", new MockFileData("a") },
+                { isWin ? @"c:\source\pages\b.md" : "/source/pages/b.md", new MockFileData("b") }
+            }));
+
+            var pages = service.GetPages().ToArray();
+            
+            Assert.Equal(2, pages.Count());
+            Assert.Equal("a", pages[0].fileName);
+            Assert.Equal("b", pages[1].fileName);
+        }
+
+        [Fact]
+        public void ShouldReturnPageContentByFileName()
+        {
+            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { isWin ? @"c:\source\pages\a.md" : "/source/pages/a.md", new MockFileData("a") }
+            }));
+
+            var content = service.GetPage("a");
+
+            Assert.Equal("a", content);
+        }
+
         private FileSystemSourceHandler Construct(MockFileSystem mock)
         {
             var optionsMock = new Mock<IOptions<SiteConfig>>();

@@ -23,5 +23,10 @@ namespace Bloggen.Net.Content
         {
             return Markdown.ToHtml(this.sourceHandler.GetPost(fileName), this.pipeline);
         }
+
+        public string RenderPage(string fileName)
+        {
+            return Markdown.ToHtml(this.sourceHandler.GetPage(fileName), this.pipeline);
+        }
     }
 }

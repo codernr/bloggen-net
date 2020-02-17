@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.IO.Abstractions;
 using Bloggen.Net.Config;
+using Bloggen.Net.Content;
 using Bloggen.Net.Model;
 using Bloggen.Net.Output;
 using Bloggen.Net.Output.Implementation;
@@ -38,7 +39,8 @@ namespace Bloggen.Net
                 .AddSingleton<IContext<Post, Tag>, Context<Post, Tag>>()
                 .AddSingleton<IHandlebars>(Handlebars.Create())
                 .AddSingleton<ITemplateHandler, HandlebarsTemplateHandler>()
-                .AddSingleton<IOutputHandler, FileSystemOutputHandler>();
+                .AddSingleton<IOutputHandler, FileSystemOutputHandler>()
+                .AddSingleton<IContentParser, MarkdownContentParser>();
 
             return serviceCollection.BuildServiceProvider();
         }

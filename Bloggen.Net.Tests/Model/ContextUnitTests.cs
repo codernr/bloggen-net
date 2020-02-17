@@ -14,9 +14,9 @@ namespace Bloggen.Net.Tests.Model
     public class ContextUnitTests
     {
         [Fact]
-        public void ShouldPopulatePostsAndTagsCorrectly()
+        public void ShouldPopulateContextCorrectly()
         {
-            var service = new Context<Post, Tag>(this.GetSourceHandler(), this.GetDeserializer());
+            var service = new Context<Post, Tag, Page>(this.GetSourceHandler(), this.GetDeserializer());
 
             var posts = service.Posts.ToArray();
             var tags = service.Tags.ToArray();
@@ -27,6 +27,7 @@ namespace Bloggen.Net.Tests.Model
             Assert.Equal("tag1", tags[0].Name);
             Assert.Equal("tag2", tags[1].Name);
             Assert.Equal("tag3", tags[2].Name);
+            Assert.Equal("x", service.Pages.ToArray()[0].FileName);
             Assert.Contains(tags[0], posts[0].TagReferences);
             Assert.Contains(tags[1], posts[0].TagReferences);
             Assert.Contains(tags[1], posts[1].TagReferences);
@@ -46,6 +47,11 @@ namespace Bloggen.Net.Tests.Model
                 ("a", Stream("a")), ("b", Stream("b"))
             });
 
+            m.Setup(o => o.GetPages()).Returns(new[]
+            {
+                ("x", Stream("x"))
+            });
+            
             return m.Object;
         }
 
@@ -54,6 +60,7 @@ namespace Bloggen.Net.Tests.Model
             var m = new Mock<IFrontMatterDeserializer>();
 
             m.Setup(o => o.Deserialize<Post>(It.IsAny<TextReader>())).Returns(new Func<TextReader, Post>(this.GetPost));
+            m.Setup(o => o.Deserialize<Page>(It.IsAny<TextReader>())).Returns(new Func<TextReader, Page>(this.GetPage));
 
             return m.Object;
         }
@@ -67,6 +74,16 @@ namespace Bloggen.Net.Tests.Model
                     "b" => new Post { Title = "b", FileName = "b", Tags = new List<string> { "tag2", "tag3" }},
                     _ => null!
                 };
+        }
+
+        private Page GetPage(TextReader tr)
+        {
+            var content = tr.ReadToEnd();
+            return content switch
+            {
+                "x" => new Page { Title = "x", FileName = "x" },
+                _ => null!
+            };
         }
 
         private static Stream Stream(string s)
@@ -92,6 +109,13 @@ namespace Bloggen.Net.Tests.Model
             public string Name { get; set; } = null!;
 
             public List<IPost> PostReferences { get; set; } = new List<IPost>();
+        }
+
+        private class Page : IPage
+        {
+            public string FileName { get; set; } = null!;
+            
+            public string? Title { get; set; }
         }
     }
 }

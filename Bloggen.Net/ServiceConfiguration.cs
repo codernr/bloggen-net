@@ -36,7 +36,7 @@ namespace Bloggen.Net
                     .Build())
                 .AddSingleton<Func<TextReader, IParser>>(tr => new Parser(tr))
                 .AddSingleton<IFrontMatterDeserializer, FrontMatterDeserializer>()
-                .AddSingleton<IContext<Post, Tag>, Context<Post, Tag>>()
+                .AddSingleton<IContext<Post, Tag, Page>, Context<Post, Tag, Page>>()
                 .AddSingleton<IHandlebars>(Handlebars.Create())
                 .AddSingleton<ITemplateHandler, HandlebarsTemplateHandler>()
                 .AddSingleton<IOutputHandler, FileSystemOutputHandler>()

@@ -20,7 +20,7 @@ namespace Bloggen.Net.Output
 
         private readonly IFileSystem fileSystem;
 
-        private readonly IContext<Post, Tag> context;
+        private readonly IContext<Post, Tag, Page> context;
 
         private readonly ITemplateHandler templateHandler;
 
@@ -29,7 +29,7 @@ namespace Bloggen.Net.Output
         public FileSystemOutputHandler(
             CommandLineOptions commandLineOptions,
             IFileSystem fileSystem,
-            IContext<Post, Tag> context,
+            IContext<Post, Tag, Page> context,
             ITemplateHandler templateHandler,
             IContentParser contentParser) =>
             (this.outputDirectory, this.fileSystem, this.context, this.templateHandler, this.contentParser) =

@@ -6,25 +6,23 @@ using Bloggen.Net.Source;
 
 namespace Bloggen.Net.Model
 {
-    public class Context<TPost, TTag> : IContext<TPost, TTag> where TPost : IPost, new() where TTag : ITag, new()
+    public class Context<TPost, TTag, TPage> : IContext<TPost, TTag, TPage> where TPost : IPost, new() where TTag : ITag, new() where TPage : IPage, new()
     {
         private readonly List<TPost> posts = new List<TPost>();
 
         private readonly List<TTag> tags = new List<TTag>();
 
+        private readonly List<TPage> pages = new List<TPage>();
+
         private readonly ISourceHandler sourceHandler;
 
         private readonly IFrontMatterDeserializer frontMatterDeserializer;
 
-        public IEnumerable<TPost> Posts
-        {
-            get { return this.posts; }
-        }
+        public IEnumerable<TPost> Posts => this.posts;
 
-        public IEnumerable<TTag> Tags
-        {
-            get { return this.tags; }
-        }
+        public IEnumerable<TTag> Tags => this.tags;
+
+        public IEnumerable<TPage> Pages => this.pages;
 
         public Context(ISourceHandler sourceHandler, IFrontMatterDeserializer frontMatterDeserializer)
         {
@@ -33,6 +31,7 @@ namespace Bloggen.Net.Model
 
             this.InitializePosts();
             this.InitializeTags();
+            this.InitializePages();
             this.ReferenceObjects();
         }
 
@@ -56,6 +55,20 @@ namespace Bloggen.Net.Model
                 this.posts.SelectMany(p => p.Tags)
                     .Distinct()
                     .Select(t => new TTag { Name = t }));
+        }
+
+        private void InitializePages()
+        {
+            foreach (var p in this.sourceHandler.GetPages())
+            {
+                using var sr = new StreamReader(p.stream);
+
+                var page = this.frontMatterDeserializer.Deserialize<TPage>(sr);
+
+                page.FileName = p.fileName;
+
+                this.pages.Add(page);
+            }
         }
 
         private void ReferenceObjects()

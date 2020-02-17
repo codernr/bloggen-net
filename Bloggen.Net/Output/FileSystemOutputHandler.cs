@@ -42,6 +42,8 @@ namespace Bloggen.Net.Output
             this.Generate(POSTS_DIRECTORY, this.context.Posts, p => p.FileName, "post", p => this.contentParser.RenderPost(p.FileName));
 
             this.Generate(TAGS_DIRECTORY, this.context.Tags, t => t.Name, "tag");
+
+            this.Generate(this.outputDirectory, this.context.Pages, p => p.FileName, "page", p => this.contentParser.RenderPage(p.FileName));
         }
 
         private void ClearOutput()

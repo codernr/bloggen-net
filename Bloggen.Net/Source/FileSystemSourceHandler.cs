@@ -21,12 +21,16 @@ namespace Bloggen.Net.Source
         private const string PARTIALS_DIRECTORY = "partials";
 
         private const string POSTS_DIRECTORY = "posts";
+
+        private const string PAGES_DIRECTORY = "pages";
         
         private readonly IFileSystem fileSystem;
 
         private readonly string templatePath;
 
         private readonly string postsPath;
+
+        private readonly string pagesPath;
 
         public FileSystemSourceHandler(
             IFileSystem fileSystem,
@@ -44,6 +48,11 @@ namespace Bloggen.Net.Source
             this.postsPath = this.fileSystem.Path.Combine(
                 commandLineOptions.SourceDirectory,
                 POSTS_DIRECTORY
+            );
+
+            this.pagesPath = this.fileSystem.Path.Combine(
+                commandLineOptions.SourceDirectory,
+                PAGES_DIRECTORY
             );
         }
 
@@ -84,12 +93,19 @@ namespace Bloggen.Net.Source
             return this.EnumerateFiles(this.postsPath);
         }
 
+        public IEnumerable<(string fileName, Stream stream)> GetPages()
+        {
+            return this.EnumerateFiles(this.pagesPath);
+        }
+
         public string GetPost(string fileName)
         {
-            var filePath = this.fileSystem.Directory.GetFiles(this.postsPath).First(f =>
-                this.fileSystem.Path.GetFileNameWithoutExtension(f) == fileName);
+            return this.GetFile(fileName, this.postsPath);
+        }
 
-            return this.fileSystem.File.ReadAllText(filePath);
+        public string GetPage(string fileName)
+        {
+            return this.GetFile(fileName, this.pagesPath);
         }
 
         private IEnumerable<(string name, Stream stream)> EnumerateFiles(string path)
@@ -98,6 +114,14 @@ namespace Bloggen.Net.Source
                 .Select(p => 
                     (this.fileSystem.Path.GetFileNameWithoutExtension(p), 
                     this.fileSystem.FileStream.Create(p, FileMode.Open)));
+        }
+
+        private string GetFile(string fileName, string directory)
+        {
+            var filePath = this.fileSystem.Directory.GetFiles(directory).First(f =>
+                this.fileSystem.Path.GetFileNameWithoutExtension(f) == fileName);
+
+            return this.fileSystem.File.ReadAllText(filePath);
         }
     }
 }

@@ -14,6 +14,10 @@ namespace Bloggen.Net.Source
 
         IEnumerable<(string fileName, Stream stream)> GetPosts();
 
+        IEnumerable<(string fileName, Stream stream)> GetPages();
+
         string GetPost(string fileName);
+
+        string GetPage(string fileName);
     }
 }

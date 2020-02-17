@@ -15,8 +15,6 @@ namespace Bloggen.Net.Template
 
         private readonly IHandlebars handlebars;
 
-        private readonly IContentParser contentParser;
-
         private readonly Action<TextWriter, object> renderTemplate;
 
         private readonly Dictionary<string, Action<TextWriter, object>> layouts = new Dictionary<string, Action<TextWriter, object>>();
@@ -24,14 +22,11 @@ namespace Bloggen.Net.Template
         public HandlebarsTemplateHandler(
             ISourceHandler sourceHandler,
             IHandlebars handlebars,
-            IContentParser contentParser,
             IOptions<SiteConfig> siteConfig)
         {
             this.siteConfig = siteConfig.Value;
             
             this.handlebars = handlebars;
-
-            this.contentParser = contentParser;
 
             using var sr = new StreamReader(sourceHandler.GetTemplate());
 
@@ -81,9 +76,9 @@ namespace Bloggen.Net.Template
             });
         }
 
-        public void Write(TextWriter writer, string layout, object data)
+        public void Write(TextWriter writer, string layout, object data, string? content = null)
         {
-            this.renderTemplate(writer, new { layout = layout, data = data, site = this.siteConfig });
+            this.renderTemplate(writer, new { layout = layout, data = data, site = this.siteConfig, content = content });
         }
     }
 }

@@ -1,5 +1,3 @@
-using System.IO;
-using System.Threading.Tasks;
 using Bloggen.Net.Source;
 using Markdig;
 
@@ -21,12 +19,9 @@ namespace Bloggen.Net.Content
                 .Build();
         }
 
-        public void RenderPost(string fileName, TextWriter writer)
+        public string RenderPost(string fileName)
         {
-            Markdown.ToHtml(
-                this.sourceHandler.GetPost(fileName),
-                writer,
-                this.pipeline);
+            return Markdown.ToHtml(this.sourceHandler.GetPost(fileName), this.pipeline);
         }
     }
 }

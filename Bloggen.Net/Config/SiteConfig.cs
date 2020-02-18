@@ -5,5 +5,7 @@ namespace Bloggen.Net.Config
         public string Title { get; set; } = string.Empty;
 
         public string Template { get; set; } = string.Empty;
+
+        public int PostsPerPage { get; set; } = 10;
     }
 }

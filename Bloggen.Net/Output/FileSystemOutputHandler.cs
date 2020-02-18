@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
+using System.Linq;
+using Bloggen.Net.Config;
 using Bloggen.Net.Content;
 using Bloggen.Net.Model;
 using Bloggen.Net.Output.Implementation;
 using Bloggen.Net.Template;
+using Microsoft.Extensions.Options;
 
 namespace Bloggen.Net.Output
 {
@@ -26,14 +29,17 @@ namespace Bloggen.Net.Output
 
         private readonly IContentParser contentParser;
 
+        private readonly SiteConfig siteConfig;
+
         public FileSystemOutputHandler(
             CommandLineOptions commandLineOptions,
             IFileSystem fileSystem,
             IContext<Post, Tag, Page> context,
             ITemplateHandler templateHandler,
-            IContentParser contentParser) =>
-            (this.outputDirectory, this.fileSystem, this.context, this.templateHandler, this.contentParser) =
-            (commandLineOptions.OutputDirectory, fileSystem, context, templateHandler, contentParser);
+            IContentParser contentParser,
+            IOptions<SiteConfig> siteConfig) =>
+            (this.outputDirectory, this.fileSystem, this.context, this.templateHandler, this.contentParser, this.siteConfig) =
+            (commandLineOptions.OutputDirectory, fileSystem, context, templateHandler, contentParser, siteConfig.Value);
 
         public void Generate()
         {
@@ -74,6 +80,22 @@ namespace Bloggen.Net.Output
 
                 this.templateHandler.Write(sw, layout, item, getContent != null ? getContent(item) : null);
             }
+        }
+
+        private LinkedList<PaginationNode<Post>> CreatePostPages()
+        {
+            var postCount = this.context.Posts.Count();
+
+            var list = new LinkedList<PaginationNode<Post>>();
+
+            for (int i = 0; i * this.siteConfig.PostsPerPage < postCount; i++)
+            {
+                list.AddLast(new PaginationNode<Post>(
+                    i + 1,
+                    this.context.Posts.Skip(i * this.siteConfig.PostsPerPage).Take(this.siteConfig.PostsPerPage)));
+            }
+
+            return list;
         }
     }
 }

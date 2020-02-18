@@ -17,6 +17,8 @@ namespace Bloggen.Net.Output
 
         public const string TAGS_DIRECTORY = "tags";
 
+        public const string POST_PAGES_DIRECTORY = "pages";
+
         private const string EXTENSION = "html";
 
         private readonly string outputDirectory;
@@ -79,6 +81,30 @@ namespace Bloggen.Net.Output
                 );
 
                 this.templateHandler.Write(sw, layout, item, getContent != null ? getContent(item) : null);
+            }
+        }
+
+        private void GeneratePostPages()
+        {
+            var list = this.CreatePostPages();
+
+            // first page
+            var firstSw = this.fileSystem.File.CreateText(
+                this.fileSystem.Path.Combine(this.outputDirectory, $"index.{EXTENSION}"));
+
+            this.templateHandler.Write(firstSw, "list", list.First!, null);
+
+            // other pages
+            var node = list.First?.Next;
+
+            while (node != null)
+            {
+                var sw = this.fileSystem.File.CreateText(
+                    this.fileSystem.Path.Combine(this.outputDirectory, POST_PAGES_DIRECTORY, $"{node.Value.PageNumber}.{EXTENSION}"));
+                
+                this.templateHandler.Write(sw, "list", node, null);
+
+                node = node.Next;
             }
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Bloggen.Net.Model
@@ -5,6 +6,8 @@ namespace Bloggen.Net.Model
     public interface IPost
     {
         string FileName { get; set; }
+
+        DateTime CreatedAt { get; set; }
 
         string? Title { get; set; }
 

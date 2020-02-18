@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Bloggen.Net.Model;
@@ -10,6 +11,8 @@ namespace Bloggen.Net.Output.Implementation
         
         [Required]
         public string? Title { get; set; }
+
+        public DateTime CreatedAt { get; set; }
 
         public string? Excerpt { get; set; }
 

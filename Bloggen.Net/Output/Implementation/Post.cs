@@ -12,6 +12,7 @@ namespace Bloggen.Net.Output.Implementation
         [Required]
         public string? Title { get; set; }
 
+        [Required]
         public DateTime CreatedAt { get; set; }
 
         public string? Excerpt { get; set; }

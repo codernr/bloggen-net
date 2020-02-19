@@ -52,6 +52,8 @@ namespace Bloggen.Net.Output
             this.Generate(TAGS_DIRECTORY, this.context.Tags, t => t.Name, "tag");
 
             this.Generate(this.outputDirectory, this.context.Pages, p => p.FileName, "page", p => this.contentParser.RenderPage(p.FileName));
+
+            this.GeneratePostPages();
         }
 
         private void ClearOutput()
@@ -109,7 +111,7 @@ namespace Bloggen.Net.Output
             node.Url = url;
             node.TotalCount = totalCount;
 
-            var sw = this.fileSystem.File.CreateText(this.fileSystem.Path.Combine(pathParts));
+            using var sw = this.fileSystem.File.CreateText(this.fileSystem.Path.Combine(pathParts));
 
             this.templateHandler.Write(sw, "list", node, null);
         }

@@ -3,7 +3,7 @@ using Bloggen.Net.Output.Implementation;
 
 namespace Bloggen.Net.Output
 {
-    public class PaginationNode<T> where T : class
+    public class PaginationNode<T> : IResource where T : class
     {
         private readonly int pageNumber;
 
@@ -12,6 +12,8 @@ namespace Bloggen.Net.Output
         public int PageNumber => this.pageNumber;
 
         public IEnumerable<T> Items => this.items;
+
+        public string? Url { get; set; }
 
         public PaginationNode(int pageNumber, IEnumerable<T> items) =>
             (this.pageNumber, this.items) = (pageNumber, items);

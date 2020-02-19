@@ -74,14 +74,10 @@ namespace Bloggen.Net.Output
 
             this.fileSystem.Directory.CreateDirectory(path);
 
-            var builder = new UriBuilder(this.siteConfig.Url);
-
             foreach(var item in items)
             {
-                builder.Path = $"{directory}/{nameSelector(item)}";
+                item.Url = this.GetUrl(directory, nameSelector(item));
 
-                item.Url = builder.Uri.AbsoluteUri;
-                
                 using var sw = this.fileSystem.File.CreateText(
                     $"{this.fileSystem.Path.Combine(path, nameSelector(item))}.{EXTENSION}"
                 );
@@ -100,11 +96,18 @@ namespace Bloggen.Net.Output
 
             this.templateHandler.Write(firstSw, "list", list.First!, null);
 
+            if (list.First != null)
+            {
+                list.First.Value.Url = this.GetUrl();
+            }
+
             // other pages
             var node = list.First?.Next;
 
             while (node != null)
             {
+                node.Value.Url = this.GetUrl(POSTS_DIRECTORY, node.Value.PageNumber.ToString());
+
                 var sw = this.fileSystem.File.CreateText(
                     this.fileSystem.Path.Combine(this.outputDirectory, POST_PAGES_DIRECTORY, $"{node.Value.PageNumber}.{EXTENSION}"));
                 
@@ -128,6 +131,15 @@ namespace Bloggen.Net.Output
             }
 
             return list;
+        }
+
+        private string GetUrl(params string[] pathParts)
+        {
+            var builder = new UriBuilder(this.siteConfig.Url);
+
+            builder.Path = string.Join('/', pathParts);
+
+            return builder.Uri.AbsoluteUri;
         }
     }
 }

@@ -99,6 +99,8 @@ namespace Bloggen.Net.Tests.Model
 
             public string? Excerpt { get; set; }
 
+            public DateTime CreatedAt { get; set; }
+
             public List<string> Tags { get; set; } = new List<string>();
 
             public List<ITag> TagReferences { get; set; } = new List<ITag>();

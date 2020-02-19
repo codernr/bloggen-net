@@ -122,11 +122,13 @@ namespace Bloggen.Net.Output
 
             var list = new List<PaginationNode<Post>>();
 
+            var ordered = this.context.Posts.OrderByDescending(p => p.CreatedAt);
+
             for (int i = 0; i * this.siteConfig.PostsPerPage < postCount; i++)
             {
                 list.Add(new PaginationNode<Post>(
                     i + 1,
-                    this.context.Posts.Skip(i * this.siteConfig.PostsPerPage).Take(this.siteConfig.PostsPerPage)));
+                    ordered.Skip(i * this.siteConfig.PostsPerPage).Take(this.siteConfig.PostsPerPage)));
                 
                 if (i > 0)
                 {

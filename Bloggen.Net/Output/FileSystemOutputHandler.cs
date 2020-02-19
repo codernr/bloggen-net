@@ -68,14 +68,20 @@ namespace Bloggen.Net.Output
             string directory,
             IEnumerable<T> items,
             Func<T, string> nameSelector,
-            string layout, Func<T, string>? getContent = null) where T : class
+            string layout, Func<T, string>? getContent = null) where T : class, IResource
         {
             var path = this.fileSystem.Path.Combine(this.outputDirectory, directory);
 
             this.fileSystem.Directory.CreateDirectory(path);
 
+            var builder = new UriBuilder(this.siteConfig.Url);
+
             foreach(var item in items)
             {
+                builder.Path = $"{directory}/{nameSelector(item)}";
+
+                item.Url = builder.Uri.AbsoluteUri;
+                
                 using var sw = this.fileSystem.File.CreateText(
                     $"{this.fileSystem.Path.Combine(path, nameSelector(item))}.{EXTENSION}"
                 );

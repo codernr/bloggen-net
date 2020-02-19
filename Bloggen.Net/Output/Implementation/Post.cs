@@ -5,7 +5,7 @@ using Bloggen.Net.Model;
 
 namespace Bloggen.Net.Output.Implementation
 {
-    public class Post : IPost
+    public class Post : IPost, IResource
     {
         public string FileName { get; set; } = null!;
         
@@ -21,9 +21,6 @@ namespace Bloggen.Net.Output.Implementation
 
         public List<ITag> TagReferences { get; set; } = new List<ITag>();
 
-        public string Url
-        { 
-            get { return $"/{FileSystemOutputHandler.POSTS_DIRECTORY}/{this.FileName}"; }
-        }
+        public string? Url { get; set; }
     }
 }

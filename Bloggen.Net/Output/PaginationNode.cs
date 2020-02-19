@@ -15,6 +15,8 @@ namespace Bloggen.Net.Output
 
         public string? Url { get; set; }
 
+        public int TotalCount { get; set; }
+
         public PaginationNode<T> Previous { get; set; }
 
         public PaginationNode<T> Next { get; set; }

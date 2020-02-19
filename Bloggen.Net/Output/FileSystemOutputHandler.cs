@@ -97,6 +97,7 @@ namespace Bloggen.Net.Output
             this.templateHandler.Write(firstSw, "list", list[0], null);
 
             list[0].Url = this.GetUrl();
+            list[0].TotalCount = list.Count;
 
             // other pages
             var node = list[0].Next;

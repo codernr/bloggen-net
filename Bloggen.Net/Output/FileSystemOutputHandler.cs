@@ -90,29 +90,28 @@ namespace Bloggen.Net.Output
         {
             var list = this.CreatePostPages();
 
-            // first page
-            var firstSw = this.fileSystem.File.CreateText(
-                this.fileSystem.Path.Combine(this.outputDirectory, $"index.{EXTENSION}"));
+            this.GeneratePostPage(list[0], list.Count, this.GetUrl(), this.outputDirectory, $"index.{EXTENSION}");
 
-            this.templateHandler.Write(firstSw, "list", list[0], null);
-
-            list[0].Url = this.GetUrl();
-            list[0].TotalCount = list.Count;
-
-            // other pages
             var node = list[0].Next;
 
             while (node != null)
             {
-                node.Url = this.GetUrl(POSTS_DIRECTORY, node.PageNumber.ToString());
-
-                var sw = this.fileSystem.File.CreateText(
-                    this.fileSystem.Path.Combine(this.outputDirectory, POST_PAGES_DIRECTORY, $"{node.PageNumber}.{EXTENSION}"));
-                
-                this.templateHandler.Write(sw, "list", node, null);
+                this.GeneratePostPage(
+                    node, list.Count, this.GetUrl(POSTS_DIRECTORY, node.PageNumber.ToString()),
+                    this.outputDirectory, POST_PAGES_DIRECTORY, $"{node.PageNumber}.{EXTENSION}");
 
                 node = node.Next;
             }
+        }
+
+        private void GeneratePostPage<T>(PaginationNode<T> node, int totalCount, string url, params string[] pathParts) where T : class, IResource
+        {
+            node.Url = url;
+            node.TotalCount = totalCount;
+
+            var sw = this.fileSystem.File.CreateText(this.fileSystem.Path.Combine(pathParts));
+
+            this.templateHandler.Write(sw, "list", node, null);
         }
 
         private List<PaginationNode<Post>> CreatePostPages()

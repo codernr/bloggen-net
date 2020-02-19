@@ -15,6 +15,10 @@ namespace Bloggen.Net.Output
 
         public string? Url { get; set; }
 
+        public PaginationNode<T> Previous { get; set; }
+
+        public PaginationNode<T> Next { get; set; }
+
         public PaginationNode(int pageNumber, IEnumerable<T> items) =>
             (this.pageNumber, this.items) = (pageNumber, items);
     }

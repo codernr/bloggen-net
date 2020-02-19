@@ -94,22 +94,19 @@ namespace Bloggen.Net.Output
             var firstSw = this.fileSystem.File.CreateText(
                 this.fileSystem.Path.Combine(this.outputDirectory, $"index.{EXTENSION}"));
 
-            this.templateHandler.Write(firstSw, "list", list.First!, null);
+            this.templateHandler.Write(firstSw, "list", list[0], null);
 
-            if (list.First != null)
-            {
-                list.First.Value.Url = this.GetUrl();
-            }
+            list[0].Url = this.GetUrl();
 
             // other pages
-            var node = list.First?.Next;
+            var node = list[0].Next;
 
             while (node != null)
             {
-                node.Value.Url = this.GetUrl(POSTS_DIRECTORY, node.Value.PageNumber.ToString());
+                node.Url = this.GetUrl(POSTS_DIRECTORY, node.PageNumber.ToString());
 
                 var sw = this.fileSystem.File.CreateText(
-                    this.fileSystem.Path.Combine(this.outputDirectory, POST_PAGES_DIRECTORY, $"{node.Value.PageNumber}.{EXTENSION}"));
+                    this.fileSystem.Path.Combine(this.outputDirectory, POST_PAGES_DIRECTORY, $"{node.PageNumber}.{EXTENSION}"));
                 
                 this.templateHandler.Write(sw, "list", node, null);
 
@@ -117,17 +114,23 @@ namespace Bloggen.Net.Output
             }
         }
 
-        private LinkedList<PaginationNode<Post>> CreatePostPages()
+        private List<PaginationNode<Post>> CreatePostPages()
         {
             var postCount = this.context.Posts.Count();
 
-            var list = new LinkedList<PaginationNode<Post>>();
+            var list = new List<PaginationNode<Post>>();
 
             for (int i = 0; i * this.siteConfig.PostsPerPage < postCount; i++)
             {
-                list.AddLast(new PaginationNode<Post>(
+                list.Add(new PaginationNode<Post>(
                     i + 1,
                     this.context.Posts.Skip(i * this.siteConfig.PostsPerPage).Take(this.siteConfig.PostsPerPage)));
+                
+                if (i > 0)
+                {
+                    list[i].Previous = list[i - 1];
+                    list[i - 1].Next = list[i];
+                }
             }
 
             return list;

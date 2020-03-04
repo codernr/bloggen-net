@@ -54,6 +54,8 @@ namespace Bloggen.Net.Output
             this.Generate(this.outputDirectory, this.context.Pages, p => p.FileName, "page", p => this.contentParser.RenderPage(p.FileName));
 
             this.GeneratePostPages();
+
+            this.GenerateTagsIndex();
         }
 
         private void ClearOutput()
@@ -104,6 +106,14 @@ namespace Bloggen.Net.Output
 
                 node = node.Next;
             }
+        }
+
+        private void GenerateTagsIndex()
+        {
+            using var sw = this.fileSystem.File.CreateText(
+                this.fileSystem.Path.Combine(this.outputDirectory, TAGS_DIRECTORY, $"index.{EXTENSION}"));
+
+            this.templateHandler.Write(sw, "tags", this.context.Tags.OrderBy(t => t.Name));
         }
 
         private void GeneratePostPage<T>(PaginationNode<T> node, int totalCount, string url, params string[] pathParts) where T : class, IResource

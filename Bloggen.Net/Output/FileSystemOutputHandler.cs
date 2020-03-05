@@ -56,6 +56,8 @@ namespace Bloggen.Net.Output
             this.GeneratePostPages();
 
             this.GenerateTagsIndex();
+
+            this.CopyAssets();
         }
 
         private void ClearOutput()
@@ -157,6 +159,39 @@ namespace Bloggen.Net.Output
             builder.Path = string.Join('/', pathParts);
 
             return builder.Uri.AbsoluteUri;
+        }
+
+        private void CopyAssets()
+        {
+            var source = this.fileSystem.Path.Combine(this.commandLineOptions.SourceDirectory, "assets");
+            var destination = this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, "assets");
+
+            this.CopyDirectory(source, destination);
+        }
+
+        private void CopyDirectory(string source, string destination)
+        {
+            var sourceDirectory = this.fileSystem.DirectoryInfo.FromDirectoryName(source);
+
+            if (!sourceDirectory.Exists)
+            {
+                return;
+            }
+
+            if (!this.fileSystem.DirectoryInfo.FromDirectoryName(destination).Exists)
+            {
+                this.fileSystem.Directory.CreateDirectory(destination);
+            }
+
+            foreach (var f in sourceDirectory.GetFiles())
+            {
+                f.CopyTo(this.fileSystem.Path.Combine(destination, f.Name), true);
+            }
+
+            foreach (var d in sourceDirectory.GetDirectories())
+            {
+                this.CopyDirectory(d.FullName, this.fileSystem.Path.Combine(destination, d.Name));
+            }
         }
     }
 }

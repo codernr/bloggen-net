@@ -21,7 +21,7 @@ namespace Bloggen.Net.Output
 
         private const string EXTENSION = "html";
 
-        private readonly string outputDirectory;
+        private readonly CommandLineOptions commandLineOptions;
 
         private readonly IFileSystem fileSystem;
 
@@ -40,8 +40,8 @@ namespace Bloggen.Net.Output
             ITemplateHandler templateHandler,
             IContentParser contentParser,
             IOptions<SiteConfig> siteConfig) =>
-            (this.outputDirectory, this.fileSystem, this.context, this.templateHandler, this.contentParser, this.siteConfig) =
-            (commandLineOptions.OutputDirectory, fileSystem, context, templateHandler, contentParser, siteConfig.Value);
+            (this.commandLineOptions, this.fileSystem, this.context, this.templateHandler, this.contentParser, this.siteConfig) =
+            (commandLineOptions, fileSystem, context, templateHandler, contentParser, siteConfig.Value);
 
         public void Generate()
         {
@@ -51,7 +51,7 @@ namespace Bloggen.Net.Output
 
             this.Generate(TAGS_DIRECTORY, this.context.Tags, t => t.Name, "tag");
 
-            this.Generate(this.outputDirectory, this.context.Pages, p => p.FileName, "page", p => this.contentParser.RenderPage(p.FileName));
+            this.Generate(this.commandLineOptions.OutputDirectory, this.context.Pages, p => p.FileName, "page", p => this.contentParser.RenderPage(p.FileName));
 
             this.GeneratePostPages();
 
@@ -60,12 +60,12 @@ namespace Bloggen.Net.Output
 
         private void ClearOutput()
         {
-            if (this.fileSystem.Directory.Exists(this.outputDirectory))
+            if (this.fileSystem.Directory.Exists(this.commandLineOptions.OutputDirectory))
             {
-                this.fileSystem.Directory.Delete(this.outputDirectory, true);
+                this.fileSystem.Directory.Delete(this.commandLineOptions.OutputDirectory, true);
             }
 
-            this.fileSystem.Directory.CreateDirectory(this.outputDirectory);
+            this.fileSystem.Directory.CreateDirectory(this.commandLineOptions.OutputDirectory);
         }
 
         private void Generate<T>(
@@ -74,7 +74,7 @@ namespace Bloggen.Net.Output
             Func<T, string> nameSelector,
             string layout, Func<T, string>? getContent = null) where T : class, IResource
         {
-            var path = this.fileSystem.Path.Combine(this.outputDirectory, directory);
+            var path = this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, directory);
 
             this.fileSystem.Directory.CreateDirectory(path);
 
@@ -94,7 +94,7 @@ namespace Bloggen.Net.Output
         {
             var list = this.CreatePostPages();
 
-            this.GeneratePostPage(list[0], list.Count, this.GetUrl(), this.outputDirectory, $"index.{EXTENSION}");
+            this.GeneratePostPage(list[0], list.Count, this.GetUrl(), this.commandLineOptions.OutputDirectory, $"index.{EXTENSION}");
 
             var node = list[0].Next;
 
@@ -102,7 +102,7 @@ namespace Bloggen.Net.Output
             {
                 this.GeneratePostPage(
                     node, list.Count, this.GetUrl(POSTS_DIRECTORY, node.PageNumber.ToString()),
-                    this.outputDirectory, POST_PAGES_DIRECTORY, $"{node.PageNumber}.{EXTENSION}");
+                    this.commandLineOptions.OutputDirectory, POST_PAGES_DIRECTORY, $"{node.PageNumber}.{EXTENSION}");
 
                 node = node.Next;
             }
@@ -111,7 +111,7 @@ namespace Bloggen.Net.Output
         private void GenerateTagsIndex()
         {
             using var sw = this.fileSystem.File.CreateText(
-                this.fileSystem.Path.Combine(this.outputDirectory, TAGS_DIRECTORY, $"index.{EXTENSION}"));
+                this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, TAGS_DIRECTORY, $"index.{EXTENSION}"));
 
             this.templateHandler.Write(sw, "tags", this.context.Tags.OrderBy(t => t.Name));
         }

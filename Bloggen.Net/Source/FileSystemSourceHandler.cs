@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using System.Threading.Tasks;
 using Bloggen.Net.Config;
 using Microsoft.Extensions.Options;
 
@@ -10,6 +9,10 @@ namespace Bloggen.Net.Source
 {
     public class FileSystemSourceHandler : ISourceHandler
     {
+        public string AssetsPath => this.assetsPath;
+
+        public string TemplateAssetsPath => this.templateAssetsPath;
+
         private const string TEMPLATES_DIRECTORY = "templates";
 
         private const string TEMPLATE_NAME = "index.hbs";
@@ -32,6 +35,10 @@ namespace Bloggen.Net.Source
 
         private readonly string pagesPath;
 
+        private readonly string assetsPath;
+
+        private readonly string templateAssetsPath;
+
         public FileSystemSourceHandler(
             IFileSystem fileSystem,
             CommandLineOptions commandLineOptions,
@@ -53,6 +60,16 @@ namespace Bloggen.Net.Source
             this.pagesPath = this.fileSystem.Path.Combine(
                 commandLineOptions.SourceDirectory,
                 PAGES_DIRECTORY
+            );
+
+            this.assetsPath = this.fileSystem.Path.Combine(
+                commandLineOptions.SourceDirectory,
+                "assets"
+            );
+
+            this.templateAssetsPath = this.fileSystem.Path.Combine(
+                this.templatePath,
+                "assets"
             );
         }
 

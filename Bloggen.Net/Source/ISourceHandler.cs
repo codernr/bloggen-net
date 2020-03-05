@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Bloggen.Net.Source
 {
     public interface ISourceHandler
     {
+        string AssetsPath { get; }
+
+        string TemplateAssetsPath { get; }
+
         Stream GetTemplate();
 
         IEnumerable<(string partialName, Stream stream)> GetLayouts();

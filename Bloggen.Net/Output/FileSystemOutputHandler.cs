@@ -6,6 +6,7 @@ using Bloggen.Net.Config;
 using Bloggen.Net.Content;
 using Bloggen.Net.Model;
 using Bloggen.Net.Output.Implementation;
+using Bloggen.Net.Source;
 using Bloggen.Net.Template;
 using Microsoft.Extensions.Options;
 
@@ -33,15 +34,18 @@ namespace Bloggen.Net.Output
 
         private readonly SiteConfig siteConfig;
 
+        private readonly ISourceHandler sourceHandler;
+
         public FileSystemOutputHandler(
             CommandLineOptions commandLineOptions,
             IFileSystem fileSystem,
             IContext<Post, Tag, Page> context,
             ITemplateHandler templateHandler,
             IContentParser contentParser,
-            IOptions<SiteConfig> siteConfig) =>
-            (this.commandLineOptions, this.fileSystem, this.context, this.templateHandler, this.contentParser, this.siteConfig) =
-            (commandLineOptions, fileSystem, context, templateHandler, contentParser, siteConfig.Value);
+            IOptions<SiteConfig> siteConfig,
+            ISourceHandler sourceHandler) =>
+            (this.commandLineOptions, this.fileSystem, this.context, this.templateHandler, this.contentParser, this.siteConfig, this.sourceHandler) =
+            (commandLineOptions, fileSystem, context, templateHandler, contentParser, siteConfig.Value, sourceHandler);
 
         public void Generate()
         {
@@ -163,10 +167,10 @@ namespace Bloggen.Net.Output
 
         private void CopyAssets()
         {
-            var source = this.fileSystem.Path.Combine(this.commandLineOptions.SourceDirectory, "assets");
             var destination = this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, "assets");
 
-            this.CopyDirectory(source, destination);
+            this.CopyDirectory(this.sourceHandler.AssetsPath, destination);
+            this.CopyDirectory(this.sourceHandler.TemplateAssetsPath, destination);
         }
 
         private void CopyDirectory(string source, string destination)

@@ -15,6 +15,9 @@ namespace Bloggen.Net.Output.Implementation
         [Required]
         public DateTime CreatedAt { get; set; }
 
+        [Required]
+        public string? PostedBy { get; set; }
+
         public string? Excerpt { get; set; }
 
         public List<string> Tags { get; set; } = new List<string>();

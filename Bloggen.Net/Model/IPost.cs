@@ -13,6 +13,8 @@ namespace Bloggen.Net.Model
 
         string? Excerpt { get; set; }
 
+        string? PostedBy { get; set; } 
+
         List<string> Tags { get; set; }
 
         List<ITag> TagReferences { get; set; }

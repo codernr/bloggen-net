@@ -101,6 +101,8 @@ namespace Bloggen.Net.Tests.Model
 
             public DateTime CreatedAt { get; set; }
 
+            public string? PostedBy { get; set; }
+
             public List<string> Tags { get; set; } = new List<string>();
 
             public List<ITag> TagReferences { get; set; } = new List<ITag>();

@@ -10,8 +10,6 @@ namespace Bloggen.Net.Template
 {
     public class HandlebarsTemplateHandler : ITemplateHandler
     {
-        private readonly SiteConfig siteConfig;
-
         private readonly IHandlebars handlebars;
 
         private readonly Action<TextWriter, object> renderTemplate;
@@ -20,11 +18,8 @@ namespace Bloggen.Net.Template
 
         public HandlebarsTemplateHandler(
             ISourceHandler sourceHandler,
-            IHandlebars handlebars,
-            IOptions<SiteConfig> siteConfig)
+            IHandlebars handlebars)
         {
-            this.siteConfig = siteConfig.Value;
-            
             this.handlebars = handlebars;
 
             using var sr = new StreamReader(sourceHandler.GetTemplate());
@@ -87,9 +82,9 @@ namespace Bloggen.Net.Template
             });
         }
 
-        public void Write(TextWriter writer, string layout, object data, string? content = null)
+        public void Write(TextWriter writer, string layout, object data, object site, string? content = null)
         {
-            this.renderTemplate(writer, new { layout = layout, data = data, site = this.siteConfig, content = content });
+            this.renderTemplate(writer, new { layout, data, site, content });
         }
     }
 }

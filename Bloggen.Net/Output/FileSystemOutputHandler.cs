@@ -36,6 +36,8 @@ namespace Bloggen.Net.Output
 
         private readonly ISourceHandler sourceHandler;
 
+        private readonly object site;
+
         public FileSystemOutputHandler(
             CommandLineOptions commandLineOptions,
             IFileSystem fileSystem,
@@ -43,9 +45,13 @@ namespace Bloggen.Net.Output
             ITemplateHandler templateHandler,
             IContentParser contentParser,
             IOptions<SiteConfig> siteConfig,
-            ISourceHandler sourceHandler) =>
+            ISourceHandler sourceHandler)
+        {
             (this.commandLineOptions, this.fileSystem, this.context, this.templateHandler, this.contentParser, this.siteConfig, this.sourceHandler) =
             (commandLineOptions, fileSystem, context, templateHandler, contentParser, siteConfig.Value, sourceHandler);
+
+            this.site = new { config = this.siteConfig, tags = this.context.Tags, pages = this.context.Pages };
+        }
 
         public void Generate()
         {
@@ -92,7 +98,7 @@ namespace Bloggen.Net.Output
                     $"{this.fileSystem.Path.Combine(path, nameSelector(item))}.{EXTENSION}"
                 );
 
-                this.templateHandler.Write(sw, layout, item, getContent != null ? getContent(item) : null);
+                this.templateHandler.Write(sw, layout, item, this.site, getContent != null ? getContent(item) : null);
             }
         }
 
@@ -119,7 +125,7 @@ namespace Bloggen.Net.Output
             using var sw = this.fileSystem.File.CreateText(
                 this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, TAGS_DIRECTORY, $"index.{EXTENSION}"));
 
-            this.templateHandler.Write(sw, "tags", this.context.Tags.OrderBy(t => t.Name));
+            this.templateHandler.Write(sw, "tags", this.context.Tags.OrderBy(t => t.Name), this.site);
         }
 
         private void GeneratePostPage<T>(PaginationNode<T> node, int totalCount, string url, params string[] pathParts) where T : class, IResource
@@ -129,7 +135,7 @@ namespace Bloggen.Net.Output
 
             using var sw = this.fileSystem.File.CreateText(this.fileSystem.Path.Combine(pathParts));
 
-            this.templateHandler.Write(sw, "list", node, null);
+            this.templateHandler.Write(sw, "list", node, this.site, null);
         }
 
         private List<PaginationNode<Post>> CreatePostPages()

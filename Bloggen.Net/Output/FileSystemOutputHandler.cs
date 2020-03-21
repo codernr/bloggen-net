@@ -57,11 +57,11 @@ namespace Bloggen.Net.Output
         {
             this.ClearOutput();
 
-            this.Generate(POSTS_DIRECTORY, this.context.Posts, p => p.FileName, "post", p => this.contentParser.RenderPost(p.FileName));
+            this.Generate(this.context.Posts, p => p.FileName, "post", p => this.contentParser.RenderPost(p.FileName), POSTS_DIRECTORY);
 
-            this.Generate(TAGS_DIRECTORY, this.context.Tags, t => t.Name, "tag");
+            this.Generate(this.context.Tags, t => t.Name, "tag", null, TAGS_DIRECTORY);
 
-            this.Generate(this.commandLineOptions.OutputDirectory, this.context.Pages, p => p.FileName, "page", p => this.contentParser.RenderPage(p.FileName));
+            this.Generate(this.context.Pages, p => p.FileName, "page", p => this.contentParser.RenderPage(p.FileName));
 
             this.GeneratePostPages();
 
@@ -81,18 +81,18 @@ namespace Bloggen.Net.Output
         }
 
         private void Generate<T>(
-            string directory,
             IEnumerable<T> items,
             Func<T, string> nameSelector,
-            string layout, Func<T, string>? getContent = null) where T : class, IResource
+            string layout, Func<T, string>? getContent = null, string? directory = null) where T : class, IResource
         {
-            var path = this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, directory);
+            var path = directory == null ? this.commandLineOptions.OutputDirectory :
+                this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, directory);
 
             this.fileSystem.Directory.CreateDirectory(path);
 
             foreach(var item in items)
             {
-                item.Url = this.GetUrl(directory, nameSelector(item));
+                item.Url = directory == null ? $"/{nameSelector(item)}" : $"/{directory}/{nameSelector(item)}";
 
                 using var sw = this.fileSystem.File.CreateText(
                     $"{this.fileSystem.Path.Combine(path, nameSelector(item))}.{EXTENSION}"

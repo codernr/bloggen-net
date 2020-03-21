@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Bloggen.Net.Config;
 using Bloggen.Net.Source;
@@ -16,11 +17,16 @@ namespace Bloggen.Net.Template
 
         private readonly Dictionary<string, Action<TextWriter, object>> layouts = new Dictionary<string, Action<TextWriter, object>>();
 
+        private readonly SiteConfig siteConfig;
+
         public HandlebarsTemplateHandler(
             ISourceHandler sourceHandler,
-            IHandlebars handlebars)
+            IHandlebars handlebars,
+            IOptions<SiteConfig> siteConfig)
         {
             this.handlebars = handlebars;
+
+            this.siteConfig = siteConfig.Value;
 
             using var sr = new StreamReader(sourceHandler.GetTemplate());
 
@@ -80,11 +86,29 @@ namespace Bloggen.Net.Template
 
                 writer.WriteSafeString(content);
             });
+
+            this.handlebars.RegisterHelper("date", this.DateFormatter);
         }
 
         public void Write(TextWriter writer, string layout, object data, object site, string? content = null)
         {
             this.renderTemplate(writer, new { layout, data, site, content });
+        }
+
+        private void DateFormatter(TextWriter writer, dynamic context, params object[] parameters)
+        {
+            if (parameters.Length != 1)
+            {
+                throw new HandlebarsException("{{date}} needs one parameter");
+            }
+            if (parameters[0].GetType() != typeof(DateTime))
+            {
+                throw new HandlebarsException("Invalid argument types, should be {{date DateTime}}");
+            }
+
+            DateTime date = (DateTime)parameters[0];
+
+            writer.WriteSafeString(date.ToString(this.siteConfig.DateFormat, CultureInfo.InvariantCulture));
         }
     }
 }

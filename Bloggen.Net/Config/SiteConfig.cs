@@ -11,5 +11,7 @@ namespace Bloggen.Net.Config
         public int PostsPerPage { get; set; } = 10;
 
         public string Url { get; set; } = "/";
+
+        public string DateFormat { get; set; } = "YYYY-MM-dd";
     }
 }

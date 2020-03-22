@@ -57,13 +57,15 @@ namespace Bloggen.Net.Output
         {
             this.ClearOutput();
 
-            this.Generate(this.context.Posts, p => p.FileName, "post", p => this.contentParser.RenderPost(p.FileName), POSTS_DIRECTORY);
+            this.GenerateContextUrls();
 
-            this.Generate(this.context.Tags, t => t.Name, "tag", null, TAGS_DIRECTORY);
+            this.Render(this.context.Posts, "post", p => this.contentParser.RenderPost(p.FileName));
 
-            this.Generate(this.context.Pages, p => p.FileName, "page", p => this.contentParser.RenderPage(p.FileName));
+            this.Render(this.context.Tags, "tag");
 
-            this.GeneratePostPages();
+            this.Render(this.context.Pages, "page", p => this.contentParser.RenderPage(p.FileName));
+
+            this.RenderPostPages();
 
             this.GenerateTagsIndex();
 
@@ -78,43 +80,59 @@ namespace Bloggen.Net.Output
             }
 
             this.fileSystem.Directory.CreateDirectory(this.commandLineOptions.OutputDirectory);
+            
+            this.CreateOutputSubDirectory(POSTS_DIRECTORY);
+            this.CreateOutputSubDirectory(TAGS_DIRECTORY);
+            this.CreateOutputSubDirectory(POST_PAGES_DIRECTORY);
         }
 
-        private void Generate<T>(
-            IEnumerable<T> items,
-            Func<T, string> nameSelector,
-            string layout, Func<T, string>? getContent = null, string? directory = null) where T : class, IResource
+        private void CreateOutputSubDirectory(string directory)
         {
-            var path = directory == null ? this.commandLineOptions.OutputDirectory :
-                this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, directory);
+            this.fileSystem.Directory.CreateDirectory(
+                this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, directory));
+        }
 
-            this.fileSystem.Directory.CreateDirectory(path);
+        private void GenerateContextUrls()
+        {
+            foreach (var p in this.context.Posts)
+            {
+                p.Url = $"{POSTS_DIRECTORY}/{p.FileName}";
+            }
 
+            foreach (var t in this.context.Tags)
+            {
+                t.Url = $"{TAGS_DIRECTORY}/{t.Name.ToLower()}";
+            }
+
+            foreach (var p in this.context.Pages)
+            {
+                p.Url = $"{p.FileName}";
+            }
+        }
+
+        private void Render<T>(IEnumerable<T> items, string layout, Func<T, string>? getContent = null) where T : class, IResource
+        {
             foreach(var item in items)
             {
-                item.Url = directory == null ? $"/{nameSelector(item)}" : $"/{directory}/{nameSelector(item)}";
-
-                using var sw = this.fileSystem.File.CreateText(
-                    $"{this.fileSystem.Path.Combine(path, nameSelector(item))}.{EXTENSION}"
-                );
+                var p = this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, item.Url);
+                
+                using var sw = this.fileSystem.File.CreateText($"{p}.{EXTENSION}");
 
                 this.templateHandler.Write(sw, layout, item, this.site, getContent != null ? getContent(item) : null);
             }
         }
 
-        private void GeneratePostPages()
+        private void RenderPostPages()
         {
-            var list = this.CreatePostPages();
+            var list = this.GeneratePostPages();
 
-            this.GeneratePostPage(list[0], list.Count, this.GetUrl(), this.commandLineOptions.OutputDirectory, $"index.{EXTENSION}");
+            this.RenderPostPage(list[0], list.Count, this.commandLineOptions.OutputDirectory, $"index.{EXTENSION}");
 
             var node = list[0].Next;
 
             while (node != null)
             {
-                this.GeneratePostPage(
-                    node, list.Count, this.GetUrl(POSTS_DIRECTORY, node.PageNumber.ToString()),
-                    this.commandLineOptions.OutputDirectory, POST_PAGES_DIRECTORY, $"{node.PageNumber}.{EXTENSION}");
+                this.RenderPostPage(node, list.Count, this.commandLineOptions.OutputDirectory, $"{node.Url}.{EXTENSION}");
 
                 node = node.Next;
             }
@@ -128,9 +146,8 @@ namespace Bloggen.Net.Output
             this.templateHandler.Write(sw, "tags", this.context.Tags.OrderBy(t => t.Name), this.site);
         }
 
-        private void GeneratePostPage<T>(PaginationNode<T> node, int totalCount, string url, params string[] pathParts) where T : class, IResource
+        private void RenderPostPage<T>(PaginationNode<T> node, int totalCount, params string[] pathParts) where T : class, IResource
         {
-            node.Url = url;
             node.TotalCount = totalCount;
 
             using var sw = this.fileSystem.File.CreateText(this.fileSystem.Path.Combine(pathParts));
@@ -138,7 +155,7 @@ namespace Bloggen.Net.Output
             this.templateHandler.Write(sw, "list", node, this.site, null);
         }
 
-        private List<PaginationNode<Post>> CreatePostPages()
+        private List<PaginationNode<Post>> GeneratePostPages()
         {
             var postCount = this.context.Posts.Count();
 
@@ -154,21 +171,17 @@ namespace Bloggen.Net.Output
                 
                 if (i > 0)
                 {
+                    list[i].Url = $"{POST_PAGES_DIRECTORY}/{(list[i].PageNumber)}";
                     list[i].Previous = list[i - 1];
                     list[i - 1].Next = list[i];
+                }
+                else
+                {
+                    list[i].Url = string.Empty;
                 }
             }
 
             return list;
-        }
-
-        private string GetUrl(params string[] pathParts)
-        {
-            var builder = new UriBuilder(this.siteConfig.Url);
-
-            builder.Path = string.Join('/', pathParts);
-
-            return builder.Uri.AbsoluteUri;
         }
 
         private void CopyAssets()

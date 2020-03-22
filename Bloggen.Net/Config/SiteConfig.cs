@@ -12,6 +12,6 @@ namespace Bloggen.Net.Config
 
         public string Url { get; set; } = "/";
 
-        public string DateFormat { get; set; } = "YYYY-MM-dd";
+        public string DateFormat { get; set; } = "yyyy-MM-dd";
     }
 }

@@ -50,7 +50,7 @@ namespace Bloggen.Net.Output
             (this.commandLineOptions, this.fileSystem, this.context, this.templateHandler, this.contentParser, this.siteConfig, this.sourceHandler) =
             (commandLineOptions, fileSystem, context, templateHandler, contentParser, siteConfig.Value, sourceHandler);
 
-            this.site = new { config = this.siteConfig, tags = this.context.Tags, pages = this.context.Pages };
+            this.site = new { config = this.siteConfig, tags = this.context.Tags.OrderBy(t => t.Name), pages = this.context.Pages };
         }
 
         public void Generate()
@@ -66,8 +66,6 @@ namespace Bloggen.Net.Output
             this.Render(this.context.Pages, "page", p => this.contentParser.RenderPage(p.FileName));
 
             this.RenderPostPages();
-
-            this.GenerateTagsIndex();
 
             this.CopyAssets();
         }
@@ -136,14 +134,6 @@ namespace Bloggen.Net.Output
 
                 node = node.Next;
             }
-        }
-
-        private void GenerateTagsIndex()
-        {
-            using var sw = this.fileSystem.File.CreateText(
-                this.fileSystem.Path.Combine(this.commandLineOptions.OutputDirectory, TAGS_DIRECTORY, $"index.{EXTENSION}"));
-
-            this.templateHandler.Write(sw, "tags", this.context.Tags.OrderBy(t => t.Name), this.site);
         }
 
         private void RenderPostPage<T>(PaginationNode<T> node, int totalCount, params string[] pathParts) where T : class, IResource

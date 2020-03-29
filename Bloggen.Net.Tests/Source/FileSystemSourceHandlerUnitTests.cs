@@ -41,19 +41,17 @@ namespace Bloggen.Net.Tests
             {
                 { isWin ? @"c:\source\templates\x\layouts\page.hbs" : "/source/templates/x/layouts/page.hbs", new MockFileData(string.Empty) },
                 { isWin ? @"c:\source\templates\x\layouts\post.hbs" : "/source/templates/x/layouts/post.hbs", new MockFileData(string.Empty) },
-                { isWin ? @"c:\source\templates\x\layouts\archive.hbs" : "/source/templates/x/layouts/archive.hbs", new MockFileData(string.Empty) },
-                { isWin ? @"c:\source\templates\x\layouts\tags.hbs" : "/source/templates/x/layouts/tags.hbs", new MockFileData(string.Empty) },
+                { isWin ? @"c:\source\templates\x\layouts\list.hbs" : "/source/templates/x/layouts/list.hbs", new MockFileData(string.Empty) },
                 { isWin ? @"c:\source\templates\x\layouts\tag.hbs" : "/source/templates/x/layouts/tag.hbs", new MockFileData(string.Empty) }
             }));
 
             var layouts = service.GetLayouts().ToArray();
 
-            Assert.Equal(5, layouts.Length);
+            Assert.Equal(4, layouts.Length);
             Assert.Equal("page", layouts[0].partialName);
             Assert.Equal("post", layouts[1].partialName);
-            Assert.Equal("archive", layouts[2].partialName);
-            Assert.Equal("tags", layouts[3].partialName);
-            Assert.Equal("tag", layouts[4].partialName);
+            Assert.Equal("tag", layouts[2].partialName);
+            Assert.Equal("list", layouts[3].partialName);
         }
 
         [Fact]

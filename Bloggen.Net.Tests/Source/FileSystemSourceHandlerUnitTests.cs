@@ -79,14 +79,6 @@ namespace Bloggen.Net.Tests
         }
 
         [Fact]
-        public void ShouldThrowWhenPartialsDirNotPresent()
-        {
-            var service = this.Construct(new MockFileSystem());
-
-            Assert.Throws<DirectoryNotFoundException>(() => service.GetPartials());
-        }
-
-        [Fact]
         public void ShouldReturnPostsStreams()
         {
             var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>

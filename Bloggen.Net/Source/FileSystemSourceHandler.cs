@@ -101,8 +101,17 @@ namespace Bloggen.Net.Source
 
         public IEnumerable<(string partialName, Stream stream)> GetPartials()
         {
-            return this.EnumerateFiles(
-                this.fileSystem.Path.Combine(this.templatePath, PARTIALS_DIRECTORY));
+            var path = this.fileSystem.Path.Combine(this.templatePath, PARTIALS_DIRECTORY);
+
+            if (this.fileSystem.Directory.Exists(path))
+            {
+                return this.EnumerateFiles(
+                    this.fileSystem.Path.Combine(this.templatePath, PARTIALS_DIRECTORY));
+            }
+            else
+            {
+                return Enumerable.Empty<(string partialName, Stream stream)>();
+            }
         }
 
         public IEnumerable<(string fileName, Stream stream)> GetPosts()

@@ -99,7 +99,7 @@ namespace Bloggen.Net.Tests
         {
             var service = this.Construct(new MockFileSystem());
 
-            Assert.Throws<DirectoryNotFoundException>(() => service.GetPartials());
+            Assert.Throws<DirectoryNotFoundException>(() => service.GetPosts());
         }
 
         [Fact]

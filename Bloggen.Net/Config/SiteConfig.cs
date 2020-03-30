@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Bloggen.Net.Config
 {
     public class SiteConfig
@@ -13,5 +15,14 @@ namespace Bloggen.Net.Config
         public string Url { get; set; } = "/";
 
         public string DateFormat { get; set; } = "yyyy-MM-dd";
+
+        public MetaProperty[] MetaProperties { get; set; } = new MetaProperty[]{};
+    }
+
+    public class MetaProperty
+    {
+        public string Property { get; set; } = string.Empty;
+
+        public string Content { get; set; } = string.Empty;
     }
 }

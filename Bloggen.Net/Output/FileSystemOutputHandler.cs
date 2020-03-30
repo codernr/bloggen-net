@@ -9,6 +9,7 @@ using Bloggen.Net.Output.Implementation;
 using Bloggen.Net.Source;
 using Bloggen.Net.Template;
 using Microsoft.Extensions.Options;
+using Slugify;
 
 namespace Bloggen.Net.Output
 {
@@ -36,6 +37,8 @@ namespace Bloggen.Net.Output
 
         private readonly ISourceHandler sourceHandler;
 
+        private readonly ISlugHelper slugHelper;
+
         private readonly object site;
 
         public FileSystemOutputHandler(
@@ -45,10 +48,12 @@ namespace Bloggen.Net.Output
             ITemplateHandler templateHandler,
             IContentParser contentParser,
             IOptions<SiteConfig> siteConfig,
-            ISourceHandler sourceHandler)
+            ISourceHandler sourceHandler,
+            ISlugHelper slugHelper)
         {
-            (this.commandLineOptions, this.fileSystem, this.context, this.templateHandler, this.contentParser, this.siteConfig, this.sourceHandler) =
-            (commandLineOptions, fileSystem, context, templateHandler, contentParser, siteConfig.Value, sourceHandler);
+            (this.commandLineOptions, this.fileSystem, this.context, this.templateHandler,
+            this.contentParser, this.siteConfig, this.sourceHandler, this.slugHelper) =
+            (commandLineOptions, fileSystem, context, templateHandler, contentParser, siteConfig.Value, sourceHandler, slugHelper);
 
             this.site = new { config = this.siteConfig, tags = this.context.Tags.OrderBy(t => t.Name), pages = this.context.Pages };
         }
@@ -99,7 +104,7 @@ namespace Bloggen.Net.Output
 
             foreach (var t in this.context.Tags)
             {
-                t.Url = $"{TAGS_DIRECTORY}/{t.Name.ToLower()}";
+                t.Url = $"{TAGS_DIRECTORY}/{this.slugHelper.GenerateSlug(t.Name)}";
             }
 
             foreach (var p in this.context.Pages)

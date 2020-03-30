@@ -12,6 +12,7 @@ using Bloggen.Net.Template;
 using HandlebarsDotNet;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Slugify;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -40,7 +41,8 @@ namespace Bloggen.Net
                 .AddSingleton<IHandlebars>(Handlebars.Create())
                 .AddSingleton<ITemplateHandler, HandlebarsTemplateHandler>()
                 .AddSingleton<IOutputHandler, FileSystemOutputHandler>()
-                .AddSingleton<IContentParser, MarkdownContentParser>();
+                .AddSingleton<IContentParser, MarkdownContentParser>()
+                .AddSingleton<ISlugHelper, SlugHelper>();
 
             return serviceCollection.BuildServiceProvider();
         }

@@ -232,7 +232,7 @@ This template is used to render one specific tag's post list. Tag metadata is av
 
 There are two registered helpers in Bloggen.Net by default:
 
-* Date helper that renders date objects with the format string from config; usage: `{{date datevariable}}
+* Date helper that renders date objects with the format string from config; usage: `{{date datevariable}}`
 * Html helper that renders markdown content as html; usage: `{{html content}}`
 
 ## Automation

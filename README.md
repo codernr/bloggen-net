@@ -91,3 +91,55 @@ metaProperties:
   - property: 'og:image'
     content: '/assets/my-facebook-share-image.jpg'
 ```
+
+## Pages
+
+Files in the pages directory are rendered in the output root directory directly so they can be reached on the `/pagename` path. SReserved therefore are not allowed for pages:
+
+* assets
+* pages
+* posts
+* tags
+* index
+
+Page metadata is passed in the file's front matter header and content is parsed as markdown. Currently pages only have `title` metadata:
+
+```
+---
+# Front matter header is between --- marks
+title: 'About'
+---
+
+# Here comes the markdown content
+
+...
+```
+
+## Posts
+
+Posts are generated based on their filename and available on `/posts/post-file-name` path so it is recommended to name the original file seo-friendly. The format is the same front matter + markdown as with pages. Example:
+
+```
+---
+# Front matter header is between --- marks
+
+# Title of the post
+title: 'My first blog post'
+
+# Excerpt that can be used on list page for example
+excerpt: 'A longer description of my post'
+
+# Date of creation (list page orders by this)
+createdAt: '2020-04-01'
+
+# Author
+postedBy: 'codernr'
+
+# Tags
+tags: [ 'blog', 'C#', 'Github' ]
+---
+
+# Here comes the markdown content
+
+...
+```

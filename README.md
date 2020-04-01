@@ -61,3 +61,33 @@ source/
 │   └── ...
 └── config.yml
 ```
+
+## Config
+
+The source root directory contains a `config.yml` file that represents the site configuration. Example:
+
+```yml
+# The title of the site; default: empty string
+title: 'Site title'
+
+# A subheading/slogan; default: empty string
+subHeading: 'A secondary heading'
+
+# source/templates directory can contain multiple templates,
+# the one with this name is rendered; default: empty string
+template: 'my-template-name'
+
+# Number of posts that is displayed on one page; default: 10
+postsPerPage: 10
+
+# Root url of site; default: '/'
+url: 'https://my-page.com'
+
+# Date format string on the site; default: 'yyyy-MM-dd'
+dateFormat: 'yyyy-MM-dd'
+
+# Site-wide meta properties, e.g. 'og:title', etc.
+metaProperties:
+  - property: 'og:image'
+    content: '/assets/my-facebook-share-image.jpg'
+```

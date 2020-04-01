@@ -148,11 +148,11 @@ tags: [ 'blog', 'C#', 'Github' ]
 
 Tags are collected from posts' metadata and **grouped by slug**. Special characters are stripped and hyphens are added when generating slugs so `C#` and `C` becomes the same, this should be kept in mind when tagging posts. Tag pages are generated under `/tag/tagname` path where a list of posts using that tag is passed to the template.
 
-# Post pagination
+## Post pagination
 
 Posts are ordered descending by creation date and paginated as defined in config. The first page is always rendered as `index.html` and the other pages are rendered under `/pages/{page-number}` path.
 
-# Assets
+## Assets
 
 There are two sources of assets:
 

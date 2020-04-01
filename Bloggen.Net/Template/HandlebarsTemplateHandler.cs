@@ -90,7 +90,12 @@ namespace Bloggen.Net.Template
             this.handlebars.RegisterHelper("date", this.DateFormatter);
         }
 
-        public void Write(TextWriter writer, string layout, object data, object site, string? content = null)
+        public void Write(TextWriter writer, string layout, object data, object site)
+        {
+            this.Write(writer, layout, data, site, null);
+        }
+
+        public void Write(TextWriter writer, string layout, object data, object site, string? content)
         {
             this.renderTemplate(writer, new { layout, data, site, content });
         }

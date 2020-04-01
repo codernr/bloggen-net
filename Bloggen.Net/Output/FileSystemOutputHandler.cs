@@ -15,11 +15,11 @@ namespace Bloggen.Net.Output
 {
     public class FileSystemOutputHandler : IOutputHandler
     {
-        public const string POSTS_DIRECTORY = "posts";
+        private const string POSTS_DIRECTORY = "posts";
 
-        public const string TAGS_DIRECTORY = "tags";
+        private const string TAGS_DIRECTORY = "tags";
 
-        public const string POST_PAGES_DIRECTORY = "pages";
+        private const string POST_PAGES_DIRECTORY = "pages";
 
         private const string EXTENSION = "html";
 
@@ -147,7 +147,7 @@ namespace Bloggen.Net.Output
 
             using var sw = this.fileSystem.File.CreateText(this.fileSystem.Path.Combine(pathParts));
 
-            this.templateHandler.Write(sw, "list", node, this.site, null);
+            this.templateHandler.Write(sw, "list", node, this.site);
         }
 
         private List<PaginationNode<Post>> GeneratePostPages()

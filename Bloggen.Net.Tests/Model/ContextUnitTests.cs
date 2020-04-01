@@ -16,7 +16,7 @@ namespace Bloggen.Net.Tests.Model
         [Fact]
         public void ShouldPopulateContextCorrectly()
         {
-            var service = new Context<Post, Tag, Page>(this.GetSourceHandler(), this.GetDeserializer());
+            var service = new Context<Post, Tag, Page>(GetSourceHandler(), this.GetDeserializer());
 
             var posts = service.Posts.ToArray();
             var tags = service.Tags.ToArray();
@@ -38,7 +38,7 @@ namespace Bloggen.Net.Tests.Model
             Assert.Contains(posts[1], tags[2].PostReferences);
         }
 
-        private ISourceHandler GetSourceHandler()
+        private static ISourceHandler GetSourceHandler()
         {
             var m = new Mock<ISourceHandler>();
 
@@ -59,13 +59,13 @@ namespace Bloggen.Net.Tests.Model
         {
             var m = new Mock<IFrontMatterDeserializer>();
 
-            m.Setup(o => o.Deserialize<Post>(It.IsAny<TextReader>())).Returns(new Func<TextReader, Post>(this.GetPost));
-            m.Setup(o => o.Deserialize<Page>(It.IsAny<TextReader>())).Returns(new Func<TextReader, Page>(this.GetPage));
+            m.Setup(o => o.Deserialize<Post>(It.IsAny<TextReader>())).Returns(new Func<TextReader, Post>(GetPost));
+            m.Setup(o => o.Deserialize<Page>(It.IsAny<TextReader>())).Returns(new Func<TextReader, Page>(GetPage));
 
             return m.Object;
         }
 
-        private Post GetPost(TextReader tr)
+        private static Post GetPost(TextReader tr)
         {
             var content = tr.ReadToEnd();
             return content switch
@@ -76,14 +76,10 @@ namespace Bloggen.Net.Tests.Model
                 };
         }
 
-        private Page GetPage(TextReader tr)
+        private static Page GetPage(TextReader tr)
         {
             var content = tr.ReadToEnd();
-            return content switch
-            {
-                "x" => new Page { Title = "x", FileName = "x" },
-                _ => null!
-            };
+            return content == "x" ? new Page { Title = "x", FileName = "x" } : null!;
         }
 
         private static Stream Stream(string s)

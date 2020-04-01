@@ -18,7 +18,7 @@ namespace Bloggen.Net.Tests
         [Fact]
         public void ShouldReturnTemplateStreamWhenExists()
         {
-            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            var service = Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
                 { isWin ? @"c:\source\templates\x\index.hbs" : "/source/templates/x/index.hbs", new MockFileData("hello") }
             }));
@@ -29,7 +29,7 @@ namespace Bloggen.Net.Tests
         [Fact]
         public void ShouldThrowWhenTemplateDoesntExist()
         {
-            var service = this.Construct(new MockFileSystem());
+            var service = Construct(new MockFileSystem());
 
             Assert.ThrowsAny<IOException>(() => service.GetTemplate());
         }
@@ -37,7 +37,7 @@ namespace Bloggen.Net.Tests
         [Fact]
         public void ShouldReturnLayoutStreams()
         {
-            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            var service = Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
                 { isWin ? @"c:\source\templates\x\layouts\page.hbs" : "/source/templates/x/layouts/page.hbs", new MockFileData(string.Empty) },
                 { isWin ? @"c:\source\templates\x\layouts\post.hbs" : "/source/templates/x/layouts/post.hbs", new MockFileData(string.Empty) },
@@ -57,7 +57,7 @@ namespace Bloggen.Net.Tests
         [Fact]
         public void ShouldThrowWhenLayoutIsNotPresent()
         {
-            var service = this.Construct(new MockFileSystem());
+            var service = Construct(new MockFileSystem());
 
             Assert.ThrowsAny<IOException>(() => service.GetLayouts());
         }
@@ -65,7 +65,7 @@ namespace Bloggen.Net.Tests
         [Fact]
         public void ShouldReturnPartialStreams()
         {
-            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            var service = Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
                 { isWin ? @"c:\source\templates\x\partials\a.hbs" : "/source/templates/x/partials/a.hbs", new MockFileData("a") },
                 { isWin ? @"c:\source\templates\x\partials\b.hbs" : "/source/templates/x/partials/b.hbs", new MockFileData("b") }
@@ -81,7 +81,7 @@ namespace Bloggen.Net.Tests
         [Fact]
         public void ShouldReturnPostsStreams()
         {
-            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            var service = Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
                 { isWin ? @"c:\source\posts\a.hbs" : "/source/posts/a.hbs", new MockFileData("a") },
                 { isWin ? @"c:\source\posts\b.hbs" : "/source/posts/b.hbs", new MockFileData("b") }
@@ -97,7 +97,7 @@ namespace Bloggen.Net.Tests
         [Fact]
         public void ShouldThrowWhenPostsDirNotPresent()
         {
-            var service = this.Construct(new MockFileSystem());
+            var service = Construct(new MockFileSystem());
 
             Assert.Throws<DirectoryNotFoundException>(() => service.GetPosts());
         }
@@ -105,7 +105,7 @@ namespace Bloggen.Net.Tests
         [Fact]
         public void ShouldReturnPagesStreams()
         {
-            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            var service = Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
                 { isWin ? @"c:\source\pages\a.md" : "/source/pages/a.md", new MockFileData("a") },
                 { isWin ? @"c:\source\pages\b.md" : "/source/pages/b.md", new MockFileData("b") }
@@ -121,7 +121,7 @@ namespace Bloggen.Net.Tests
         [Fact]
         public void ShouldReturnPageContentByFileName()
         {
-            var service = this.Construct(new MockFileSystem(new Dictionary<string, MockFileData>
+            var service = Construct(new MockFileSystem(new Dictionary<string, MockFileData>
             {
                 { isWin ? @"c:\source\pages\a.md" : "/source/pages/a.md", new MockFileData("a") }
             }));
@@ -131,7 +131,7 @@ namespace Bloggen.Net.Tests
             Assert.Equal("a", content);
         }
 
-        private FileSystemSourceHandler Construct(MockFileSystem mock)
+        private static FileSystemSourceHandler Construct(MockFileSystem mock)
         {
             var optionsMock = new Mock<IOptions<SiteConfig>>();
 

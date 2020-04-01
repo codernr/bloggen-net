@@ -143,3 +143,50 @@ tags: [ 'blog', 'C#', 'Github' ]
 
 ...
 ```
+
+## Tags
+
+Tags are collected from posts' metadata and **grouped by slug**. Special characters are stripped and hyphens are added when generating slugs so `C#` and `C` becomes the same, this should be kept in mind when tagging posts. Tag pages are generated under `/tag/tagname` path where a list of posts using that tag is passed to the template.
+
+# Post pagination
+
+Posts are ordered descending by creation date and paginated as defined in config. The first page is always rendered as `index.html` and the other pages are rendered under `/pages/{page-number}` path.
+
+# Assets
+
+There are two sources of assets:
+
+* site-wide assets in `source/assets` directory
+* template specific assets in `source/templates/<selected-template>/assets`
+
+These folders are merged during generation to the `/assets` path which means that a template asset with the same name as a site asset overwrites it.
+
+## Templates
+
+Bloggen.Net uses [Handlebars.Net](https://github.com/rexm/Handlebars.Net) as a templating engine. The pages are rendered from a main template file `index.hbs` and embedded layout files that are specific for the type of content.
+
+There is a site variable that is available within all the templates called site with the following structure:
+
+```js
+{
+  config: {
+    title: '...',
+    subheading: '...',
+    template: '...',
+    postsperpage: '...'
+    // ... and al the config values
+  },
+  tags: [ // all the tags ordered by name
+    {
+      name: 'tag name',
+      postreferences: [ { /* see details at post layout description */ } ]
+      url: '/tags/tag-name'
+    }
+  ],
+  pages: [
+    { /* see details at list layout description */ }
+  ]
+}
+```
+
+

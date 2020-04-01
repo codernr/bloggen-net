@@ -1,5 +1,5 @@
 # Bloggen.Net ![.NET Core](https://github.com/codernr/bloggen-net/workflows/.NET%20Core/badge.svg) ![Codacy Badge](https://api.codacy.com/project/badge/Grade/5d3fca2276ea4c399f5b7e5d7cb3649f)
-Dotnet core static blog generator based on markdown, YAML front matter and Handlebars.NET
+Dotnet core cross platform static blog generator based on markdown, YAML front matter and Handlebars.NET
 
 ## Features
 
@@ -8,3 +8,56 @@ Dotnet core static blog generator based on markdown, YAML front matter and Handl
 * Handles tags
 * Supports pagination of posts
 * Uses [Handlebars](https://handlebarsjs.com/guide/) language for templates
+
+## Usage
+
+1. Download the [latest release](https://github.com/codernr/bloggen-net/releases/latest)
+2. Extract the tar file
+3. Go to the extracted directory
+4. Run `dotnet ./Bloggen.Net.dll -s <source directory path> -o <output directory path>`
+
+## Source directory structure
+
+The source directory has to follow a well defined structure (see details in next sections):
+
+```
+source/
+├── assets/
+│   ├── img/
+│   │   ├── some_image.jpg
+│   │   └── ...
+│   ├── js/
+│   └── ...
+├── pages
+│   ├── some-page.md
+│   ├── other-page.md
+│   └── ...
+├── posts
+│   ├── my-first-post.md
+│   ├── my-second-post.md
+│   └── ...
+├── templates
+│   ├── my-template-name/
+│   │   ├── assets/
+│   │   │   ├── img/
+│   │   │   │   ├── template_img.jpg
+│   │   │   │   └── ...
+│   │   │   ├── css/
+│   │   │   │   ├── template_style.css
+│   │   │   │   └── ...
+│   │   │   ├── js/
+│   │   │   │   ├── template_scripts.js
+│   │   │   │   └── ...
+│   │   │   └── ...
+│   │   ├── layouts/
+│   │   │   ├── list.hbs
+│   │   │   ├── page.hbs
+│   │   │   ├── post.hbs
+│   │   │   └── tag.hbs
+│   │   ├── partials/
+│   │   │   ├── any_partial.hbs
+│   │   │   └── ...
+│   │   └── index.hbs
+│   └── ...
+└── config.yml
+```

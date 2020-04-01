@@ -177,11 +177,7 @@ There is a site variable that is available within all the templates called site 
     // ... and al the config values
   },
   tags: [ // all the tags ordered by name
-    {
-      name: 'tag name',
-      postreferences: [ { /* see details at post layout description */ } ]
-      url: '/tags/tag-name'
-    }
+    { /* see details at tag layout description */ }
   ],
   pages: [
     { /* see details at list layout description */ }
@@ -189,4 +185,46 @@ There is a site variable that is available within all the templates called site 
 }
 ```
 
+### List layout (layouts/list.hbs)
 
+This template is rendered with the paginated post objects. Pagination objects are available in `{{site.pages}}` array in the template. Structure:
+
+```js
+{
+  pageNumber: 2,
+  items: [ { /* see structure at post layout */ }]
+  url: '/pages/2' // or '/' if on the first page that is index.html
+  totalcount: 3 // number of pages
+  previous: { /* the previous pagination object */ }
+  next: { /* the next pagination object */ }
+}
+```
+
+### Page layout (layouts/page.hbs)
+
+Pages are rendered with this template. Page data is available in the {{data}} variable in the template. Structure is the same as described in [posts](#pages) section.
+
+Page content is available in the {{content}} variable. To render markdown as html see [helpers](#template-helpers).
+
+### Post layout (layouts/post.hbs)
+
+The same as pages. Metadata is in the {{data}} variable, content is in {{content}}. See metadata in [posts](#posts) section.
+
+### Tag layout (layouts/tag.hbs)
+
+This template is used to render one specific tag's post list. Tag metadata is available in {{data}} variable:
+
+```js
+{
+  name: 'tag name',
+  postreferences: [ { /* see details at posts description */ } ]
+  url: '/tags/tag-name'
+}
+```
+
+### Template helpers
+
+There are two registered helpers in Bloggen.Net by default:
+
+* Date helper that renders date objects with the format string from config; usage: `{{date datevariable}}
+* Html helper that renders markdown content as html; usage: `{{html content}}`

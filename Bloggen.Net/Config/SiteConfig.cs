@@ -17,6 +17,8 @@ namespace Bloggen.Net.Config
         public string DateFormat { get; set; } = "yyyy-MM-dd";
 
         public MetaProperty[] MetaProperties { get; set; } = new MetaProperty[]{};
+
+        public string? GTag { get; set; }
     }
 
     public class MetaProperty

@@ -12,9 +12,11 @@ using Bloggen.Net.Template;
 using HandlebarsDotNet;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Slugify;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.Converters;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.NodeDeserializers;
 
@@ -31,8 +33,9 @@ namespace Bloggen.Net
                 .Configure<SiteConfig>(siteConfiguration)
                 .AddSingleton<IFileSystem, FileSystem>()
                 .AddSingleton<ISourceHandler, FileSystemSourceHandler>()
-                .AddSingleton<IDeserializer>(new DeserializerBuilder()
+                .AddSingleton<IDeserializer>(services => new DeserializerBuilder()
                     .WithNodeDeserializer(inner => new ValidatingNodeDeserializer(inner), s => s.InsteadOf<ObjectNodeDeserializer>())
+                    .WithTypeConverter(new DateTimeConverter(formats: services.GetService<IOptions<SiteConfig>>().Value.DateFormat))
                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
                     .Build())
                 .AddSingleton<Func<TextReader, IParser>>(tr => new Parser(tr))

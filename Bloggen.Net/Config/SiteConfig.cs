@@ -19,6 +19,8 @@ namespace Bloggen.Net.Config
         public MetaProperty[] MetaProperties { get; set; } = new MetaProperty[]{};
 
         public string? GTag { get; set; }
+
+        public string? DisqusId { get; set; }
     }
 
     public class MetaProperty

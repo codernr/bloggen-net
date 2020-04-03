@@ -98,6 +98,9 @@ metaProperties:
 # Google analytics tracker code, could be used in template for rendering google analytics script
 # optional
 gTag: 'UA-12345678-1'
+
+# Disqus identifier, could be used in template for rendering disqus script
+disqusId: 'my-disqus-id'
 ```
 
 ## Pages

@@ -94,6 +94,10 @@ dateFormat: 'yyyy-MM-dd'
 metaProperties:
   - property: 'og:image'
     content: '/assets/my-facebook-share-image.jpg'
+
+# Google analytics tracker code, could be used in template for rendering google analytics script
+# optional
+gTag: 'UA-12345678-1'
 ```
 
 ## Pages

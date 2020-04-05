@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Bloggen.Net.Config;
 using Bloggen.Net.Model;
 
 namespace Bloggen.Net.Output.Implementation
@@ -25,5 +26,7 @@ namespace Bloggen.Net.Output.Implementation
         public List<ITag> TagReferences { get; set; } = new List<ITag>();
 
         public string? Url { get; set; }
+
+        public List<MetaProperty> MetaProperties = new List<MetaProperty>();
     }
 }

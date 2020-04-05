@@ -64,6 +64,8 @@ namespace Bloggen.Net.Output
 
             this.GenerateContextUrls();
 
+            this.MergePostMetaproperties();
+
             this.Render(this.context.Posts, "post", p => this.contentParser.RenderPost(p.FileName));
 
             this.Render(this.context.Tags, "tag");
@@ -110,6 +112,20 @@ namespace Bloggen.Net.Output
             foreach (var p in this.context.Pages)
             {
                 p.Url = $"{p.FileName}";
+            }
+        }
+
+        private void MergePostMetaproperties()
+        {
+            foreach (var post in this.context.Posts)
+            {
+                foreach (var property in this.siteConfig.MetaProperties)
+                {
+                    if (!post.MetaProperties.Any(postProp => postProp.Property == property.Property))
+                    {
+                        post.MetaProperties.Add(property);
+                    }
+                }
             }
         }
 

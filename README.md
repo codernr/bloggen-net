@@ -148,6 +148,12 @@ postedBy: 'codernr'
 
 # Tags
 tags: [ 'blog', 'C#', 'Github' ]
+
+# Post specific meta properties, these are merged with site meta properties
+# Properties defined here take precedence over site properties so an 'og:image' defined here overrides the default one
+metaProperties:
+  - property: 'og:image'
+    content: '/assets/img/my-custom-share-image.jpg'
 ---
 
 # Here comes the markdown content
